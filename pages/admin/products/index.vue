@@ -16,11 +16,14 @@ const route = useRoute()
 const isAdmin = computed(() => route.path.startsWith('/admin'))
 
 onMounted(async () => {
-  products.value = await get('/products')
-
-  if(isAdmin.value && partnerStore.partner && partnerStore.partner?.role !== 'admin') {
-    products.value = products.value.filter(p => p.partner_id === partnerStore.partner?.id)
+  const { data } = await get(`/products?partner_id=${partnerStore.partner.id}`)
+  products.value = data 
+  
+  if(isAdmin.value && partnerStore.partner && partnerStore.partner?.company_name === 'admin') {
+    const { data } = await get('/products')
+    products.value = data
   }
+  console.log(partnerStore.partner);
 })
 
 async function deleteProduct(id) {
@@ -48,9 +51,10 @@ async function deleteProduct(id) {
           <th class="p-3 text-left">ID</th>
           <th class="p-3 text-left">Атауы</th>
           <th class="p-3 text-left">Изабражение</th>
-          <th class="p-3 text-left">Описание</th>
+          <th class="p-3 w-[200px] text-left">Описание</th>
           <th class="p-3 text-left">Число</th>
           <th class="p-3 text-left">Бағасы</th>
+          <th class="p-3 text-left">Активный</th>
           <th class="p-3">Әрекет</th>
         </tr>
       </thead>
@@ -61,9 +65,10 @@ async function deleteProduct(id) {
           <td class="p-3 flex flex-col gap-3">
             <img class="w-[100px]" v-for="(item, index) in p.images" :key="index" :src="`http://127.0.0.1:8000/storage/${item.path}`" />
           </td>
-          <td class="p-3">{{ p.description }}</td>
+          <td class="p-3 w-[200px] word-break">{{ p.description }}</td>
           <td class="p-3">{{ p.quantity }}</td>
           <td class="p-3">{{ p.price }} ₸</td>
+          <td class="p-3">{{ p.status==='active' ? 'Да' : 'Нет' }} </td>
           <td class="p-3 text-center">
             <button @click="router.push(`/admin/products/${p.id}/edit`)" class="w-full text-blue-600 hover:underline mr-2">Өзгерту</button>
             <button @click="deleteProduct(p.id)" class="w-full text-red-600 hover:underline">Жою</button>

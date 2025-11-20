@@ -14,6 +14,8 @@
           <th class="px-4 py-2 border">Мекен-жайы</th>
           <th class="px-4 py-2 border">Заказдары</th>
           <th class="px-4 py-2 border">Табысы</th>
+          <th class="p-2">Рейтинг</th>
+          <th class="p-2">Отзыв саны</th>
         </tr>
       </thead>
       <tbody>
@@ -23,6 +25,8 @@
           <td class="px-4 py-2">{{ partner.address || '-' }}</td>
           <td class="px-4 py-2">{{ partner.orders.length }}</td>
           <td class="px-4 py-2">{{ partner.total_sales }} т</td>
+          <td class="p-2">⭐ {{ partner.rating }}</td>
+          <td class="p-2">{{ partner.reviews_count }}</td>
         </tr>
       </tbody>
     </table>

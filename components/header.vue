@@ -55,6 +55,12 @@ const logout = () => {
             Заказы
           </NuxtLink>
           <NuxtLink
+            to="/catalog"
+            class="text-gray-700 hover:text-blue-600"
+          >
+            Каталогтар
+          </NuxtLink>
+          <NuxtLink
             :to="isAdmin ? '/admin/products' : '/products'"
             class="text-gray-700 hover:text-blue-600"
           >

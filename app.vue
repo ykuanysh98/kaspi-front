@@ -30,7 +30,7 @@ const url = isAdmin.value ? '/admin/me' : '/user'
 <template>
   <div class="min-h-screen bg-gray-50 flex flex-col">
     <Header/>
-    <main class="flex-1 mt-40 container mx-auto px-4 py-8">
+    <main class="flex-1 mt-40   mx-auto px-4 py-8">
       <NuxtPage />
     </main>
     <Footer/>

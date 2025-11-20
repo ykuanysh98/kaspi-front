@@ -46,7 +46,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useApi } from '~/composables/useApi'
-import ProductAddModal from '@/components/ProductAddModal.vue'
+import ProductAddModal from '~/components/productAddModal.vue'
 
 const { get } = useApi()
 const route = useRoute()

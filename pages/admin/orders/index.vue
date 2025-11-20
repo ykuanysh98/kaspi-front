@@ -14,6 +14,8 @@
       >
         <div class="flex justify-between items-center mb-2">
           <span class="font-semibold">Тапсырыс #{{ order.id }}</span>
+          <span>
+            {{ users.find(e=>e.id===order.user_id)?.name }}</span>
           <span class="text-gray-500">{{ new Date(order.created_at).toLocaleString() }}</span>
         </div>
 
@@ -23,7 +25,9 @@
             <p><b>Название товара:</b> {{ item.product.name }} </p>
             <p><b>Количество:</b> {{ item.quantity }}</p>
           </div>  
-          <span>{{ item.price * item.quantity }} ₸</span> 
+          <span>
+            {{ item.price * item.quantity }} ₸
+          </span> 
         </div>
 
         <div class="mt-2 font-bold text-right">
@@ -54,6 +58,7 @@ import { usePartnerStore } from '~/stores/partner'
 const { get } = useApi()
 const orders = ref([])
 const partners = ref([])
+const users = ref([])
 
 const partnerStore = usePartnerStore()
 
@@ -67,6 +72,9 @@ onMounted(async () => {
 
   await get('/admin/me').then((data) => {
     partnerStore.setPartner(data)
+  })
+  await get('/users').then((data) => {
+    users.value = data
   })
 
   orders.value = orders.value.filter(p => p.user_id === partnerStore.partner.id)

@@ -11,11 +11,22 @@ onMounted(async () => {
   await loadCart()
 })
 
+const changePage = async (page) => {
+  await productStore.fetchList(page)
+}
 </script>
 
 <template>
-  <div class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-    <Product v-for="p in productStore.list" :key="p.id"  :p="p" />
+  <div class="p-6">
+    <div class="flex justify-between">
+      <ProductFilters />
+      <ProductSort />
+    </div>
+    <div class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <Product v-for="p in productStore.list" :key="p.id"  :p="p" />
+    </div>
+    <Pagination v-if="productStore.meta" :meta="productStore.meta" @page-change="changePage" />
+  
   </div>
 </template>
 

@@ -15,6 +15,8 @@
     </div>
 
     <div v-else class="text-gray-500">Бұл сатушыда өнім жоқ</div>
+
+    <Review />
   </div>
 </template>
 
