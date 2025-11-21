@@ -4,15 +4,11 @@
     <select
       v-model="store.filters.sort"
       @change="apply"
-      class="border rounded px-3 py-2"
+      class="border border-gray-300 rounded-lg px-4 py-2 w-48 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
     >
       <option :value="null">Сортировка жоқ</option>
       <option value="sum_min">Баға: ↑ Өсуі</option>
       <option value="sum_max">Баға: ↓ Кемуі</option>
-      <!-- <option value="name_asc">Атауы: A → Z</option>
-      <option value="name_desc">Атауы: Z → A</option>
-      <option value="newest">Жаңалары (New)</option>
-      <option value="oldest">Ескілері</option> -->
     </select>
 
   </div>

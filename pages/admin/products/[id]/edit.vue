@@ -2,10 +2,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useApi } from '@/composables/useApi'
+import { usePartnerStore } from '~/stores/partner'
 import Multiselect from '../../../../components/multiselect.vue' 
 
 const route = useRoute()
 const router = useRouter()
+const partnerStore = usePartnerStore()
 const { get, post, del } = useApi()
 
 const product = ref({
@@ -69,6 +71,7 @@ async function update() {
     formData.append('price', product.value.price)
     formData.append('description', product.value.description)
     formData.append('quantity', product.value.quantity)
+    formData.append('partner_id', partnerStore.partner.id)
 
     try {
       await post(`/admin/products/${product.value.id}`, formData)

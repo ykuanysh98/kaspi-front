@@ -5,26 +5,33 @@ import { useUserStore } from '~/stores/user'
 import { usePartnerStore } from '~/stores/partner'
 import { useApi } from '@/composables/useApi'
 
-const { get, del } = useApi()
+const { get, post, del } = useApi()
 const userStore = useUserStore()
 const partnerStore = usePartnerStore()
-
-const products = ref([])
 const router = useRouter()
 const route = useRoute()
 
+const activeTab = ref('my') // 'my' | 'active'
+const products = ref([])
+const productsPartner = ref([])
+
 const isAdmin = computed(() => route.path.startsWith('/admin'))
 
-onMounted(async () => {
-  const { data } = await get(`/products?partner_id=${partnerStore.partner.id}`)
-  products.value = data 
-  
-  if(isAdmin.value && partnerStore.partner && partnerStore.partner?.company_name === 'admin') {
-    const { data } = await get('/products')
+async function loadProducts() {
+  if (activeTab.value === 'my') {
+    // Өз өнімдері
+    const { data } = await get(`/products?partner_id=${partnerStore.partner.id}`)
+    productsPartner.value = data
+    products.value = data
+  } else {
+    // Барлық активный өнімдер
+    const { data } = await get(`/products?status=active`)
     products.value = data
   }
-  console.log(partnerStore.partner);
-})
+}
+
+onMounted(loadProducts)
+watch(activeTab, loadProducts)
 
 async function deleteProduct(id) {
   if (!confirm('Өшіргіңіз келе ме?')) {
@@ -35,22 +42,63 @@ async function deleteProduct(id) {
   
   products.value = products.value.filter(p => p.id !== id)
 }
+
+const approveJoin = async (id) => {
+  await post(`/admin/products/${id}/join-request`)
+  const { data } = await get(`/products?partner_id=${partnerStore.partner.id}`)
+  productsPartner.value = data
+}
+
+const removeProduct = async (id) => {
+  await post(`/admin/products/${id}/remove`)
+  const { data } = await get(`/products?partner_id=${partnerStore.partner.id}`)
+  productsPartner.value = data
+}
 </script>
 
 <template>
   <div class="p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="text-2xl font-bold">🛠️ Өнімдер</h1>
-      <button v-if="userStore.user?.role === 'admin'" @click="router.push('/admin/users')" class="btn-info">Қолданушылар</button>
-      <button @click="router.push('/admin/products/new')" class="btn-primary">+ Жаңа өнім</button>
+
+    <!-- TAB BAR -->
+    <div class="flex gap-4 mb-6 border-b pb-2">
+      <button
+        :class="['px-4 py-2', activeTab === 'my' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-500']"
+        @click="activeTab = 'my'"
+      >
+        Өз өнімдері
+      </button>
+
+      <button
+        :class="['px-4 py-2', activeTab === 'active' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-500']"
+        @click="activeTab = 'active'"
+      >
+        Бүкіл активный өнімдер
+      </button>
     </div>
 
+    <!-- Header actions -->
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold">🛠️ Өнімдер</h1>
+
+      <div class="flex gap-3">
+        <button
+          v-if="activeTab === 'my'"
+          @click="router.push('/admin/products/new')"
+          class="btn-primary"
+        >
+          + Жаңа өнім
+        </button>
+      </div>
+    </div>
+
+
+    <!-- TABLE -->
     <table class="min-w-full bg-white border rounded-lg shadow">
       <thead class="bg-gray-100">
         <tr>
           <th class="p-3 text-left">ID</th>
           <th class="p-3 text-left">Атауы</th>
-          <th class="p-3 text-left">Изабражение</th>
+          <th class="p-3 text-left">Изображение</th>
           <th class="p-3 w-[200px] text-left">Описание</th>
           <th class="p-3 text-left">Число</th>
           <th class="p-3 text-left">Бағасы</th>
@@ -58,24 +106,69 @@ async function deleteProduct(id) {
           <th class="p-3">Әрекет</th>
         </tr>
       </thead>
+
       <tbody>
         <tr v-for="p in products" :key="p.id" class="border-b align-top">
           <td class="p-3">{{ p.id }}</td>
           <td class="p-3">{{ p.name }}</td>
+
           <td class="p-3 flex flex-col gap-3">
-            <img class="w-[100px]" v-for="(item, index) in p.images" :key="index" :src="`http://127.0.0.1:8000/storage/${item.path}`" />
+            <img
+              class="w-[100px]"
+              v-for="(item, index) in p.images"
+              :key="index"
+              :src="`http://127.0.0.1:8000/storage/${item.path}`"
+            />
           </td>
+
           <td class="p-3 w-[200px] word-break">{{ p.description }}</td>
           <td class="p-3">{{ p.quantity }}</td>
           <td class="p-3">{{ p.price }} ₸</td>
-          <td class="p-3">{{ p.status==='active' ? 'Да' : 'Нет' }} </td>
+          <td class="p-3">{{ p.status === 'active' ? 'Да' : 'Нет' }}</td>
+
           <td class="p-3 text-center">
-            <button @click="router.push(`/admin/products/${p.id}/edit`)" class="w-full text-blue-600 hover:underline mr-2">Өзгерту</button>
-            <button @click="deleteProduct(p.id)" class="w-full text-red-600 hover:underline">Жою</button>
+            <button
+              @click="router.push(`/admin/products/${p.id}/edit`)"
+              class="w-full text-blue-600 hover:underline mr-2"
+              v-if="activeTab === 'my'"
+            >
+              Өзгерту
+            </button>
+
+            <button
+              @click="deleteProduct(p.id)"
+              class="w-full text-red-600 hover:underline"
+              v-if="activeTab === 'my'"
+            >
+              Жою
+            </button>
+
+            <button
+              @click="approveJoin(p.id)"
+              class="w-full text-green-600 hover:underline"
+              v-if="activeTab !== 'my' && !productsPartner.some(e=>e.id===p.id)"
+            >
+              Қосылу
+            </button>
+            <span
+              v-if="activeTab !== 'my' && p.status === 'pending' && productsPartner.some(e=>e.id===p.id)"
+              class="text-yellow-600 font-semibold"
+            >
+              Тексерілуде...
+            </span>
+
+            <button
+              v-if="activeTab !== 'my' && productsPartner.some(e=>e.id===p.id)"
+              @click="removeProduct(p.id)"
+              class="text-red-600 hover:underline"
+            >
+              Өшіру
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
+
   </div>
 </template>
 

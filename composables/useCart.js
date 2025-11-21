@@ -56,7 +56,7 @@ export function useCart() {
     }
   }
 
-  const addToCart = (product, partner, quantity) => updateCart(product.id, partner.id, quantity ?? 1, product.price)
+  const addToCart = (product, partner, quantity) => updateCart(product.id, partner.id, quantity ?? 1, partner.price)
   const increase  = (productId, partnerId, product) => updateCart(productId, partnerId, 1, product.price)
 
   const decrease = async (productId, partnerId) => {

@@ -175,7 +175,7 @@ const decrease = () => {
 }
 
 const canSave = computed(() => {
-  return !!selectedPartner.value && quantity.value > 0
+  return !!selectedPartner.value && quantity.value > 0 && props.product.quantity
 })
 
 // save logic: only triggered by user pressing add/buy buttons
@@ -213,6 +213,8 @@ function saveToLocal(payload) {
 }
 
 async function handleAddToCart() {
+  console.log(props.product, selectedPartner.value);
+  
   await addToCart(props.product, selectedPartner.value, quantity.value)
   router.push('/cart')
 }
@@ -222,7 +224,3 @@ async function handleBuyNow() {
   router.push('/checkout')
 }
 </script>
-
-<style scoped>
-/* minimal modal styles (Tailwind mostly used) */
-</style>

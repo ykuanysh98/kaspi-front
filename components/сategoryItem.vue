@@ -1,13 +1,23 @@
 <template>
   <li class="ml-4 my-2">
-    <div class="flex items-center justify-between cursor-pointer" @click="handleClick">
-      <span class="font-medium hover:text-blue-600">{{ category.name }}</span>
-      <span v-if="category.children && category.children.length" class="ml-2">
-        {{ isOpen ? '▾' : '▸' }}
+    <!-- Category header -->
+    <div 
+      class="flex items-center justify-between cursor-pointer p-2 rounded-lg hover:bg-blue-50 transition"
+      @click="handleClick"
+    >
+      <span class="font-medium text-gray-800 hover:text-blue-600">{{ category.name }}</span>
+      <span v-if="category.children && category.children.length" class="ml-2 text-gray-500">
+        <svg v-if="isOpen" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
       </span>
     </div>
 
-    <ul v-if="isOpen && category.children && category.children.length">
+    <!-- Nested children -->
+    <ul v-if="isOpen && category.children && category.children.length" class="pl-4 border-l border-gray-200 mt-1">
       <CategoryItem 
         v-for="child in category.children" 
         :key="child.id" 
@@ -39,3 +49,10 @@ const handleClick = () => {
   }
 }
 </script>
+
+<style scoped>
+/* Smooth open/close transition for nested list */
+ul {
+  transition: all 0.3s ease;
+}
+</style>
