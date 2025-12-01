@@ -31,12 +31,11 @@
           >−</button>
           <span class="font-semibold">{{ item.quantity }}</span> 
           <button 
-            @click="increase(item.product.id, findInCart(item.product.id).partner_id, item.product)" 
+            @click="increase(item.product.id, findInCart(item.product.id).partner_id, item)" 
             class="px-3 py-1 border rounded hover:bg-green-100 transition"
           >+</button>
         </div>
-      </div>
-
+      </div> 
       <!-- Total and checkout -->
       <div class="mt-8 flex flex-col sm:flex-row justify-between items-center font-bold text-gray-800 gap-4">
         <span class="text-lg">Жалпы: {{ totalPrice }} ₸</span>

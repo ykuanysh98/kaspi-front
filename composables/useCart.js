@@ -57,7 +57,7 @@ export function useCart() {
   }
 
   const addToCart = (product, partner, quantity) => updateCart(product.id, partner.id, quantity ?? 1, partner.price)
-  const increase  = (productId, partnerId, product) => updateCart(productId, partnerId, 1, product.price)
+  const increase = (productId, partnerId, product) => updateCart(productId, partnerId, 1, product.partners?.find(e=>e.id===partnerId).price || product.price)
 
   const decrease = async (productId, partnerId) => {
     const item = cartItems.value.find(p => p.product_id === productId || p.id === productId && p.partner_id === partnerId)

@@ -37,7 +37,6 @@ onMounted(async () => {
   const partnersRes = await get('/admin/partners')
   
   partners.value = partnersRes.data ?? partnersRes
-  console.log('partnersRes', partners.value);
   partnerIds.value = product.value.partners.map(e => e.id)
 })
 
