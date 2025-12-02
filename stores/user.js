@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', {
 
   actions: {
     setToken(newToken) {
-      const tokenCookie = useCookie('token', {
+      const tokenCookie = useCookie('token-kaspi', {
         path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7 күн
         secure: process.env.NODE_ENV === 'production',
@@ -22,14 +22,14 @@ export const useUserStore = defineStore('user', {
     },
 
     loadToken() {
-      const tokenCookie = useCookie('token')
+      const tokenCookie = useCookie('token-kaspi')
       if (tokenCookie.value) {
         this.token = tokenCookie.value
       }
     },
 
     clearToken() {
-      const tokenCookie = useCookie('token')
+      const tokenCookie = useCookie('token-kaspi')
       tokenCookie.value = null
       this.token = null
       this.user = null

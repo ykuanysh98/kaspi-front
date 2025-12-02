@@ -1,8 +1,8 @@
 // middleware/auth.global.js
 export default defineNuxtRouteMiddleware((to, from) => {
   // Кукилерден токендерді алу
-  const token = useCookie('token').value
-  const adminToken = useCookie('token-admin').value
+  const token = useCookie('token-kaspi').value
+  const adminToken = useCookie('token-kaspi-admin').value
 
   // 🟦 Егер admin беті болса
   if (to.path.startsWith('/admin')) {

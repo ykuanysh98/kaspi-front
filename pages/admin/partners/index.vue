@@ -31,7 +31,7 @@
         >
           <td class="px-4 py-2">{{ partner.id }}</td>
 
-          <td class="px-4 py-2 font-medium">
+          <td class="px-4 py-2 font-medium" @click="router.push(`/admin/partners/${partner.id}`)">
             {{ partner.company_name || "—" }}
           </td>
 

@@ -10,7 +10,7 @@ export const usePartnerStore = defineStore('partner', {
 
   actions: {
     setToken(newToken) {
-      const tokenCookie = useCookie('token-admin', {
+      const tokenCookie = useCookie('token-kaspi-admin', {
         path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7 күн
         secure: process.env.NODE_ENV === 'production',
@@ -22,14 +22,14 @@ export const usePartnerStore = defineStore('partner', {
     },
 
     loadToken() {
-      const tokenCookie = useCookie('token-admin')
+      const tokenCookie = useCookie('token-kaspi-admin')
       if (tokenCookie.value) {
         this.token = tokenCookie.value
       }
     },
 
     clearToken() {
-      const tokenCookie = useCookie('token-admin')
+      const tokenCookie = useCookie('token-kaspi-admin')
       tokenCookie.value = null
       this.token = null
       this.partner = null
