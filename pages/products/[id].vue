@@ -27,10 +27,10 @@
         >
           <p class="text-gray-500">Дүкен {{ index + 1 }}</p>
           <h3 class="font-semibold text-gray-800">{{ item.company_name }}</h3>
-          <h3 class="font-semibold text-gray-800">Бағасы: {{ item.price }}</h3>
+          <h3 class="font-semibold text-gray-800">Бағасы: {{ item.pivot.price }}</h3>
 
           <!-- Join product modal -->
-          <ProductAddModal :product="product" />
+          <ProductAddModal :product="product" :choice="item"/>
 
           <NuxtLink
             :to="`/partners/${item.id}`"

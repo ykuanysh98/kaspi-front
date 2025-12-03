@@ -71,7 +71,7 @@ const getProductImage = (path) => {
     <div class="p-4 flex flex-col gap-2">
       <h2 class="font-bold text-lg text-gray-800 truncate">{{ p.name }}</h2>
       <p class="text-gray-700 font-semibold">{{ p.price }} ₸</p>
-      <p class="text-gray-700 font-semibold">{{ p.quantity }} шт.</p>
+      <p class="text-gray-700 font-semibold">{{ p.partners?.[0]?.pivot.quantity || 0 }} шт.</p>
 
       <!-- Add to Cart / Quantity -->
       <div v-if="!findInCart(p.id)">

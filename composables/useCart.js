@@ -31,21 +31,24 @@ export function useCart() {
   const updateCart = async (productId, partnerId, quantity = 1, price) => {
     const item = cartItems.value.find(p => p.id === productId || p.product_id === productId)
 
-    if (item && item.product.quantity === item.quantity) {
+    if (item && item.product.partners.find(e => e.id === partnerId)?.pivot.quantity === item.quantity) {
       return
     }
     
     if (userStore.token) {
       try {
-              const formData = new FormData()
-              formData.append('product_id', productId)
-              formData.append('partner_id', partnerId)
-              formData.append('quantity', quantity)
-              formData.append('price', +price)
+        const formData = new FormData()
+        formData.append('product_id', productId)
+        formData.append('partner_id', partnerId)
+        formData.append('quantity', quantity)
+        formData.append('price', +price)
 
-              await post(`/cart/add`, formData)
-              await loadCart()
-      } catch (e) { console.error('Cart update error:', e) }
+        await post(`/cart/add`, formData)
+        await loadCart()
+      } catch (e) {
+        console.error('Cart update error:', e)
+        alert(e.response.data.message)
+       }
     } else if (item) {
         item.quantity += quantity
         if (item.quantity <= 0) cartItems.value = cartItems.value.filter(p => p !== item)
@@ -56,8 +59,8 @@ export function useCart() {
     }
   }
 
-  const addToCart = (product, partner, quantity) => updateCart(product.id, partner.id, quantity ?? 1, partner.price)
-  const increase = (productId, partnerId, product) => updateCart(productId, partnerId, 1, product.partners?.find(e=>e.id===partnerId).price || product.price)
+  const addToCart = (product, partner, quantity) => updateCart(product.id, partner.id, quantity ?? 1, partner.pivot.price)
+  const increase = (productId, partnerId, product) => updateCart(productId, partnerId, 1, product.partners?.find(e=>e.id===partnerId).pivot.price || product.price)
 
   const decrease = async (productId, partnerId) => {
     const item = cartItems.value.find(p => p.product_id === productId || p.id === productId && p.partner_id === partnerId)

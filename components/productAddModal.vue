@@ -12,17 +12,22 @@
 
         <div class="relative bg-white rounded-lg w-full max-w-xl mx-4 p-6 z-10 shadow-lg">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">Сатып алушы: {{ product.name }}</h3>
+            <h3 class="text-lg font-semibold">Тауар: {{ product.name }}</h3>
             <button @click="close" class="text-gray-500 hover:text-gray-800">✕</button>
           </div>
-
           <!-- Partners list -->
           <div v-if="loadingPartners" class="py-6 text-center">Жүктелуде...</div>
 
           <div v-else>
-            <p class="text-sm text-gray-600 mb-2">Дүкенді таңдаңыз:</p>
+            <p class="text-sm text-gray-600 mb-2">
+              {{ 
+                props.choice === false
+                  ? 'Дүкенді таңдаңыз:'
+                  : `Дүкенді: ${props.choice.company_name}`
+               }}
+            </p>
 
-            <div class="max-h-40 overflow-auto space-y-2 mb-4">
+            <div v-if="props.choice === false" class="max-h-40 overflow-auto space-y-2 mb-4">
               <label
                 v-for="p in partners"
                 :key="p.id"
@@ -43,7 +48,7 @@
             </div>
 
             <!-- Quantity -->
-            <div class="flex items-center gap-3 mb-4">
+            <!-- <div class="flex items-center gap-3 mb-4">
               <span class="text-sm text-gray-600">Саны:</span>
               <div class="flex items-center border rounded">
                 <button @click="decrease" class="px-3 py-1">−</button>
@@ -53,25 +58,36 @@
               <div v-if="selectedPartner && pivotStock(selectedPartner) !== null" class="text-sm text-gray-500 ml-3">
                 Қойма: {{ pivotStock(selectedPartner) }}
               </div>
-            </div>
+            </div> -->
 
             <!-- Actions -->
-            <div class="flex gap-3">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-600">Саны:</span>
+                <div class="flex items-center border rounded">
+                  <button @click="decrease" class="px-3 py-1">−</button>
+                  <div class="px-4">{{ quantity }}</div>
+                  <button @click="increase" class="px-3 py-1">+</button>
+                </div>
+                <div v-if="selectedPartner && pivotStock(selectedPartner) !== null" class="text-sm text-gray-500 ml-3">
+                  Қойма: {{ pivotStock(selectedPartner) }}
+                </div>
+              </div>
               <button
                 @click="handleAddToCart"
                 :disabled="!canSave || saving"
-                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded disabled:opacity-60"
+                class="max-w-[200px] flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded disabled:opacity-60"
               >
                 {{ saving && action === 'cart' ? 'Сақталуда...' : 'Себетке қосу' }}
               </button>
 
-              <button
+              <!-- <button
                 @click="handleBuyNow"
                 :disabled="!canSave || saving"
                 class="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-2 rounded disabled:opacity-60"
               >
                 {{ saving && action === 'checkout' ? 'Өтініш...' : 'Тікелей тапсырыс' }}
-              </button>
+              </button> -->
             </div>
 
             <p v-if="error" class="mt-3 text-red-600 text-sm">{{ error }}</p>
@@ -96,6 +112,10 @@ const props = defineProps({
   product: {
     type: Object,
     required: true
+  },
+  choice: {
+    type: Object,
+    default: false
   }
 })
 
@@ -112,6 +132,10 @@ const action = ref('') // 'cart' or 'checkout'
 const { get, post } = useApi()
 const router = useRouter()
 const userStore = useUserStore ? useUserStore() : null
+
+onMounted(()=>{
+  selectedPartner.value = props.choice
+})
 
 const open = async () => {
   show.value = true
@@ -159,7 +183,7 @@ const pivotPrice = (p) => {
   return (p?.pivot?.price ?? p?.price ?? props.product.price ??'—')
 }
 const pivotStock = (p) => {
-  return (p?.pivot?.stock ?? p?.stock ?? null)
+  return (p?.pivot?.quantity ?? p?.quantity ?? null)
 }
 
 const increase = () => {
@@ -213,10 +237,7 @@ function saveToLocal(payload) {
 }
 
 async function handleAddToCart() {
-  console.log(props.product, selectedPartner.value);
-  
   await addToCart(props.product, selectedPartner.value, quantity.value)
-  router.push('/cart')
 }
 
 async function handleBuyNow() {

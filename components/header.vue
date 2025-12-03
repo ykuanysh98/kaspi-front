@@ -12,17 +12,7 @@ const partnerStore = usePartnerStore()
 const { clearCart } = useCart()
 
 const isAdmin = computed(() => route.path.startsWith('/admin'))
-
-const logout = () => {
-  if (isAdmin.value) {
-    partnerStore.clearToken()
-    router.push('/admin/login')
-  } else {
-    userStore.clearToken()
-    clearCart()
-    router.push('/login')
-  }
-}
+ 
 </script>
 
 <template>
@@ -40,7 +30,22 @@ const logout = () => {
       <!-- Nav Links -->
       <div class="flex flex-wrap items-center gap-4 md:gap-6 mt-3 md:mt-0">
 
+        <NuxtLink
+          v-if="!isAdmin"
+          to="/catalog"
+          class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition"
+        >
+          Каталогтар
+        </NuxtLink>
+        
         <!-- User Links -->
+        <NuxtLink
+          :to="isAdmin ? '/admin/products' : '/products'"
+          class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition"
+        >
+          Тауарлар
+        </NuxtLink>
+
         <NuxtLink
           v-if="!isAdmin"
           to="/favorites"
@@ -70,53 +75,6 @@ const logout = () => {
         >
           Заказы
         </NuxtLink>
-
-        <NuxtLink
-          v-if="!isAdmin"
-          to="/catalog"
-          class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition"
-        >
-          Каталогтар
-        </NuxtLink>
-
-        <NuxtLink
-          :to="isAdmin ? '/admin/products' : '/products'"
-          class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition"
-        >
-          Тауарлар
-        </NuxtLink>
-
-        <NuxtLink
-          v-if="!isAdmin && userStore.user?.role === 'admin'"
-          to="/users"
-          class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition"
-        >
-          Ползователи
-        </NuxtLink>
-
-        <NuxtLink
-          v-if="isAdmin && partnerStore.partner?.company_name === 'admin'"
-          to="/admin/partners"
-          class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition"
-        >
-          Продавцы
-        </NuxtLink>
-
-        <NuxtLink
-          v-if="isAdmin ? !partnerStore.token : !userStore.token"
-          :to="isAdmin ? '/admin/login' : '/login'"
-          class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition"
-        >
-          Кіру
-        </NuxtLink>
-
-        <button
-          v-if="isAdmin ? partnerStore.token : userStore.token"
-          @click="logout"
-          class="px-3 py-2 rounded-md text-red-600 font-medium hover:text-white hover:bg-red-600 transition"
-        >
-          Шығу
-        </button>
 
         <NuxtLink
           v-if="partnerStore.token || userStore.token"
