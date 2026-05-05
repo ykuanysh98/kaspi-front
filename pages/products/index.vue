@@ -30,7 +30,7 @@ const changePage = async (page) => {
       <Product
         v-for="p in productStore.list"
         :key="p.id"
-        :p="p"
+        :product="p"
         class="transform hover:scale-105 transition duration-300 ease-in-out"
       />
     </div>

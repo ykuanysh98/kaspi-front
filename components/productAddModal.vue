@@ -114,7 +114,7 @@ const props = defineProps({
     required: true
   },
   choice: {
-    type: Object,
+    type: Boolean,
     default: false
   }
 })

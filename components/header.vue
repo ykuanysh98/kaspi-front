@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useUserStore } from '~/stores/user'
 import { usePartnerStore } from '~/stores/partner'
@@ -12,7 +12,6 @@ const partnerStore = usePartnerStore()
 const { clearCart } = useCart()
 
 const isAdmin = computed(() => route.path.startsWith('/admin'))
- 
 </script>
 
 <template>
@@ -24,7 +23,7 @@ const isAdmin = computed(() => route.path.startsWith('/admin'))
         to="/"
         class="flex items-center text-2xl font-extrabold text-blue-600 hover:text-blue-700 transition"
       >
-        🛍️ Nuxt Shop
+        🛍️ Kaspi Shop
       </NuxtLink>
 
       <!-- Nav Links -->
@@ -61,10 +60,10 @@ const isAdmin = computed(() => route.path.startsWith('/admin'))
         >
           Корзина
           <span
-            v-if="useCart().cartItems.length"
+            v-if="useCart().cartItems.value.length"
             class="absolute -top-1 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center"
           >
-            {{ useCart().cartItems.length }}
+            {{ useCart().cartItems.value.length }}
           </span>
         </NuxtLink>
 

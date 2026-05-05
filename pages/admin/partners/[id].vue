@@ -10,7 +10,7 @@
     <h2 class="text-2xl font-semibold mb-4 text-gray-800">🛍️ Өнімдері</h2>
 
     <div v-if="partner && partner.products?.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <Product v-for="p in partner.products" :key="p.id" :p="p" />
+      <Product v-for="p in partner.products" :key="p.id" :product="p" />
     </div>
 
     <div v-else class="text-gray-500 text-center py-10">

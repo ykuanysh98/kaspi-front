@@ -1,11 +1,12 @@
-<script setup >
-import { onMounted } from 'vue'
-
+<script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useUserStore } from '~/stores/user' 
+import type { AxiosError } from 'axios'
+
+import { useUserStore } from '~/stores/user'
 import { usePartnerStore } from '~/stores/partner'
 import { useApi } from '@/composables/useApi'
- 
+
 const userStore = useUserStore()
 const partnerStore = usePartnerStore()
 const { get } = useApi()
@@ -16,15 +17,36 @@ userStore.loadToken()
 partnerStore.loadToken()
 
 const isAdmin = computed(() => route.path.startsWith('/admin'))
+const url = computed(() => isAdmin.value ? '/admin/me' : '/user')
 
-const url = isAdmin.value ? '/admin/me' : '/user'
-  try {
-    const res = await get(url)
-    isAdmin.value ? partnerStore.setPartner(res) : userStore.setUser(res)
-    
-  } catch (error) {
-    console.error('User жүктеу қатесі:', error.response?.data || error.message)
+interface UserResponse {
+  id: number
+  name?: string
+  email: string
+}
+
+interface PartnerResponse extends UserResponse {
+  company_name: string[]
+}
+
+const loadUser = async () => {
+  try { 
+
+    if (isAdmin.value) {
+      const res = await get<PartnerResponse>(url.value)
+      partnerStore.setPartner(res) 
+    } else {
+      const res = await get<UserResponse>(url.value)
+      userStore.setUser(res)
+    }
+
+  } catch (error: unknown) {
+    const err = error as AxiosError
+    console.error('User жүктеу қатесі:', err.response?.data || err.message)
   }
+}
+
+await loadUser()
 </script>
 
 <template>
