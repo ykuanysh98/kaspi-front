@@ -31,6 +31,14 @@ const isAdmin = computed(() => route.path.startsWith('/admin'))
 
         <NuxtLink
           v-if="!isAdmin"
+          to="/test"
+          class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-red-600 transition"
+        >
+          TEST
+        </NuxtLink>
+
+        <NuxtLink
+          v-if="!isAdmin"
           to="/catalog"
           class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition"
         >

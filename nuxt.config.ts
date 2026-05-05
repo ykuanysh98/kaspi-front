@@ -6,4 +6,8 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
   ],
+  typescript: {
+    // strict: true,
+    // typeCheck: true
+  }
 })
