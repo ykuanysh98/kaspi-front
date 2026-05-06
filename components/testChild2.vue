@@ -19,9 +19,9 @@ const emit = defineEmits<{
   messageSent: [value: string]
 }>()
 
-const emit2 = defineEmits<{
-  (e: 'delete', id: number): void
-}>()
+// const emit2 = defineEmits<{
+//   (e: 'delete', id: number): void
+// }>()
 
 function toggleVisibility() {
   isVisible.value = !isVisible.value
@@ -33,8 +33,42 @@ function sendMessage() {
 }
 
 function deleteItem(id: number) {
-  emit2('delete', id)
+  // emit2('delete', id)
 }
+
+//----------
+
+function identity<T>(arg: T):T {
+  return arg;
+}
+
+// Осылай жұмыс істеуі керек:
+const n = identity<number>(42);    // type: number
+const s = identity<string>('hi'); // type: string
+
+console.log(n, s);
+
+//----------
+
+function makePair<T, U>(first: T, second: U) {
+  return [first, second];
+}
+
+// Нәтиже типтері дәл болуы керек:
+const p = makePair('age', 25);
+// p[0]: string, p[1]: number
+
+console.log(typeof p[0], typeof p[1]);
+
+//-------------
+function getProperty<O,K extends keyof O>(obj: O, key:K):O[K] | void {
+  return console.log(obj[key]);
+}
+
+const user = { name: 'Асан', age: 30 };
+getProperty(user, 'name'); // OK
+getProperty(user, 'email'); // ERROR болуы керек
+
 </script>
 
 <template>

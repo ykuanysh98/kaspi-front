@@ -37,8 +37,8 @@ async function fetchData<T>(url: string): Promise<T> {
   return res.json() as T
 }
 
-const user = await fetchData<User>('/api/user/1')
-const list = await fetchData<Product[]>('/api/products')
+// const user = await fetchData<User>('/api/user/1')
+// const list = await fetchData<Product[]>('/api/products')
  
 // ------------ IGNORE ---
 
