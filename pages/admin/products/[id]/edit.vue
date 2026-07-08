@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useApi } from '@/composables/useApi'
-import { usePartnerStore } from '~/stores/partner'
-import Multiselect from '../../../../components/multiselect.vue' 
+import { useApi } from '~/shared/api'
+import { usePartnerStore } from '~/entities/partner'
+import Multiselect from '../../../../components/multiselect.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -35,7 +35,7 @@ onMounted(async () => {
   product.value = data
 
   const partnersRes = await get('/admin/partners')
-  
+
   partners.value = partnersRes.data ?? partnersRes
   partnerIds.value = product.value.partners.map(e => e.id)
 })
@@ -45,16 +45,16 @@ async function handleFileChange(event) {
   if (!file) return
 
   uploading.value = true
-    const formData = new FormData()
-    formData.append('image', file)
-    try {
-      const res = await post(`/admin/products/${product.value.id}/images`, formData)
-      product.value.images.push(res.image)
-    } catch (e) {
-      alert('❌ Қате: ' + e.response.data?.message)
-    } finally {
-      uploading.value = false
-    }
+  const formData = new FormData()
+  formData.append('image', file)
+  try {
+    const res = await post(`/admin/products/${product.value.id}/images`, formData)
+    product.value.images.push(res.image)
+  } catch (e) {
+    alert('❌ Қате: ' + e.response.data?.message)
+  } finally {
+    uploading.value = false
+  }
 
 }
 
@@ -65,19 +65,19 @@ async function deleteImage(imageId) {
 }
 
 async function update() {
-    const formData = new FormData()
-    formData.append('name', product.value.name)
-    formData.append('price', product.value.price)
-    formData.append('description', product.value.description)
-    formData.append('quantity', product.value.quantity)
-    formData.append('partner_id', partnerStore.partner.id)
+  const formData = new FormData()
+  formData.append('name', product.value.name)
+  formData.append('price', product.value.price)
+  formData.append('description', product.value.description)
+  formData.append('quantity', product.value.quantity)
+  formData.append('partner_id', partnerStore.partner.id)
 
-    try {
-      await post(`/admin/products/${product.value.id}`, formData)
-      router.push('/admin')
-    } catch (e) {
-      console.error('❌ Қате:', e)
-    } 
+  try {
+    await post(`/admin/products/${product.value.id}`, formData)
+    router.push('/admin')
+  } catch (e) {
+    console.error('❌ Қате:', e)
+  }
 }
 
 const handleChange = async (val) => {
@@ -88,12 +88,12 @@ const savePartners = async (val) => {
   const formData = new FormData()
   partnerIds.value.forEach(e => {
     formData.append('partner_id[]', e)
-  }) 
+  })
   try {
     await post(`/admin/products/${route.params.id}/partners`, formData)
   } catch (e) {
     console.error('❌ Қате:', e)
-  } 
+  }
 }
 
 const activateProduct = async (val) => {
@@ -101,7 +101,7 @@ const activateProduct = async (val) => {
     await post(`/admin/products/${route.params.id}/request-activation`)
   } catch (e) {
     console.error('❌ Қате:', e)
-  } 
+  }
 }
 
 </script>
@@ -123,22 +123,35 @@ const activateProduct = async (val) => {
 
         <div>
           <label class="form-label">Атауы</label>
-          <input v-model="product.name" type="text" class="form-input" />
+          <input
+            v-model="product.name"
+            type="text"
+            class="form-input" />
         </div>
 
         <div>
           <label class="form-label">Бағасы</label>
-          <input v-model="product.price" type="number" class="form-input" />
+          <input
+            v-model="product.price"
+            type="number"
+            class="form-input" />
         </div>
 
         <div>
           <label class="form-label">Саны</label>
-          <input v-model="product.quantity" type="number" min="0" class="form-input" />
+          <input
+            v-model="product.quantity"
+            type="number"
+            min="0"
+            class="form-input" />
         </div>
 
         <div class="md:col-span-2">
           <label class="form-label">Сипаттамасы</label>
-          <textarea v-model="product.description" rows="4" class="form-input"></textarea>
+          <textarea
+            v-model="product.description"
+            rows="4"
+            class="form-input"></textarea>
         </div>
       </div>
 
@@ -149,40 +162,42 @@ const activateProduct = async (val) => {
           type="file"
           accept="image/*"
           @change="handleFileChange"
-          class="form-input cursor-pointer"
-        />
-        <p v-if="uploading" class="text-blue-600 text-sm mt-2 animate-pulse">
+          class="form-input cursor-pointer"/>
+        <p
+          v-if="uploading"
+          class="text-blue-600 text-sm mt-2 animate-pulse">
           Жүктелуде...
         </p>
       </div>
 
       <!-- Existing Images -->
-      <div v-if="product.images?.length" class="mt-4">
+      <div
+        v-if="product.images?.length"
+        class="mt-4">
         <label class="form-label">Бар суреттер</label>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-2">
           <div
             v-for="img in product.images"
             :key="img.id"
-            class="relative group rounded-xl overflow-hidden border shadow-sm"
-          >
+            class="relative group rounded-xl overflow-hidden border shadow-sm">
             <img
               :src="`http://127.0.0.1:8000/storage/${img.path}`"
-              class="w-full h-32 object-cover"
-            />
+              class="w-full h-32 object-cover"/>
 
             <!-- Delete Button -->
             <button
               @click="deleteImage(img.id)"
-              class="absolute top-2 right-2 bg-red-600 text-white rounded-full px-2 py-1 text-xs opacity-0 group-hover:opacity-100 transition"
-            >
+              class="absolute top-2 right-2 bg-red-600 text-white rounded-full px-2 py-1 text-xs opacity-0 group-hover:opacity-100 transition">
               ✕
             </button>
           </div>
         </div>
       </div>
 
-      <button class="btn-primary w-full mt-4" @click="update">
+      <button
+        class="btn-primary w-full mt-4"
+        @click="update">
         💾 Өзгерістерді сақтау
       </button>
 
@@ -201,18 +216,23 @@ const activateProduct = async (val) => {
           clearable
           placeholder="Партнер таңдаңыз..."
           class="flex-1"
-          @change="handleChange"
-        />
+          @change="handleChange"/>
 
-        <button class="btn-primary whitespace-nowrap px-6" @click="savePartners">
+        <button
+          class="btn-primary whitespace-nowrap px-6"
+          @click="savePartners">
           Сақтау
         </button>
       </div>
     </div>
 
     <!-- Activation Request -->
-    <div v-if="product.status!=='active'" class="bg-white rounded-xl shadow border border-gray-100 mt-8 p-6">
-      <button class="btn-success w-full" @click="activateProduct">
+    <div
+      v-if="product.status!=='active'"
+      class="bg-white rounded-xl shadow border border-gray-100 mt-8 p-6">
+      <button
+        class="btn-success w-full"
+        @click="activateProduct">
         🚀 Өнімді активацияға жіберу
       </button>
     </div>
@@ -237,4 +257,3 @@ const activateProduct = async (val) => {
   @apply bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-semibold shadow-sm transition;
 }
 </style>
-

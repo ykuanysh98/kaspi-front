@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '~/stores/user'
-import { useCart } from '@/composables/useCart'
-import { useApi } from '@/composables/useApi'
+import { useUserStore } from '~/entities/user'
+import { useCart } from '@/entities/cart'
+import { useApi } from '~/shared/api'
 
 const router = useRouter()
 const userStore = useUserStore()

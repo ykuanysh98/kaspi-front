@@ -1,10 +1,10 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted } from 'vue'
-import { useProductStore } from '~/stores/product'
-import { useDebounce } from '@/composables/useDebounce'
+import { useProductStore } from '~/entities/product'
+import { useDebounce } from '~/shared/lib/debounce/useDebounce'
 import { useRoute, useRouter } from 'vue-router'
-import { useApi } from '@/composables/useApi'
+import { useApi } from '~/shared/api'
 
 import CategorySelectItem from './сategorySelectItem.vue'
 
@@ -29,7 +29,7 @@ const local = reactive<LocalFilters>({
   search: '',
   min_price: '',
   max_price: '',
-  category_id: '',
+  category_id: ''
 })
 
 const categories = ref([])
@@ -62,7 +62,7 @@ const apply = () => {
       min_price: local.min_price || undefined,
       max_price: local.max_price || undefined,
       category_id: local.category_id || undefined
-    },
+    }
   })
 }
 
@@ -84,8 +84,7 @@ watch(
       v-model="local.search"
       @input="apply"
       placeholder="Іздеу..."
-      class="border border-gray-300 rounded-lg px-4 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-    />
+      class="border border-gray-300 rounded-lg px-4 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"/>
 
     <!-- Min Price -->
     <input
@@ -93,8 +92,7 @@ watch(
       @input="apply"
       type="number"
       placeholder="Мин. баға"
-      class="border border-gray-300 rounded-lg px-4 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-    />
+      class="border border-gray-300 rounded-lg px-4 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"/>
 
     <!-- Max Price -->
     <input
@@ -102,19 +100,16 @@ watch(
       @input="apply"
       type="number"
       placeholder="Макс. баға"
-      class="border border-gray-300 rounded-lg px-4 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-    />
+      class="border border-gray-300 rounded-lg px-4 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"/>
 
     <!-- Category Select -->
     <select
       v-model="local.category_id"
       @change="apply"
-      class="border border-gray-300 rounded-lg px-4 py-2 w-48 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-    >
+      class="border border-gray-300 rounded-lg px-4 py-2 w-48 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
       <option value="">Барлығы</option>
       <CategorySelectItem :categories="categories" />
     </select>
 
   </div>
 </template>
- 

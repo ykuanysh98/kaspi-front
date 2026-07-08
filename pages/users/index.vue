@@ -31,7 +31,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useApi } from '~/composables/useApi'
+import { useApi } from '~/shared/api'
 import { useRouter } from 'vue-router'
 
 const { get } = useApi()

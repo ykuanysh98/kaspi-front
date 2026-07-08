@@ -1,7 +1,8 @@
 <script setup>
 import { onMounted } from 'vue'
-import { useProductStore } from '~/stores/product'
-import { useCart } from '@/composables/useCart'
+import { useProductStore } from '~/entities/product'
+import { useCart } from '@/entities/cart'
+import Product from '~/widgets/product-card/ui/ProductCardWithActions.vue'
 
 const { loadCart } = useCart()
 const productStore = useProductStore()
@@ -31,17 +32,15 @@ const changePage = async (page) => {
         v-for="p in productStore.list"
         :key="p.id"
         :product="p"
-        class="transform hover:scale-105 transition duration-300 ease-in-out"
-      />
+        class="transform hover:scale-105 transition duration-300 ease-in-out"/>
     </div>
 
     <!-- Pagination -->
     <Pagination
       v-if="productStore.meta"
       :meta="productStore.meta"
-      @page-change="changePage"
-      class="mt-6"
-    />
+      @pageChange="changePage"
+      class="mt-6"/>
 
   </div>
 </template>

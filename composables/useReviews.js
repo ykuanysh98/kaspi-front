@@ -1,4 +1,4 @@
-import { useApi } from '@/composables/useApi'
+import { useApi } from '~/shared/api'
 
 export const useReviews = () => {
   const { get, post } = useApi()

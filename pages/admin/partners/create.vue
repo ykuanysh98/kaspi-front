@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { useApi } from '@/composables/useApi'
+import { useApi } from '~/shared/api'
 
 const { post } = useApi()
 
@@ -36,10 +36,16 @@ const submit = async () => {
   <div class="max-w-xl mx-auto mt-10 bg-white shadow-md rounded-xl p-6">
     <h1 class="text-2xl font-bold mb-6">Сатушы қосу</h1>
 
-    <div v-if="success" class="mb-4 text-green-600 font-medium">Сатушы сәтті қосылды ✅</div>
-    <div v-if="error" class="mb-4 text-red-600 font-medium">{{ error }}</div>
+    <div
+      v-if="success"
+      class="mb-4 text-green-600 font-medium">Сатушы сәтті қосылды ✅</div>
+    <div
+      v-if="error"
+      class="mb-4 text-red-600 font-medium">{{ error }}</div>
 
-    <form @submit.prevent="submit" class="space-y-4">
+    <form
+      @submit.prevent="submit"
+      class="space-y-4">
       <div>
         <label class="block text-sm font-medium mb-1">Атауы</label>
         <input
@@ -47,8 +53,7 @@ const submit = async () => {
           type="text"
           class="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300"
           placeholder="Компания атауы"
-          required
-        />
+          required/>
       </div>
 
       <div>
@@ -57,8 +62,7 @@ const submit = async () => {
           v-model="form.email"
           type="email"
           class="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300"
-          placeholder="email@example.com"
-        />
+          placeholder="email@example.com"/>
       </div>
 
       <div>
@@ -67,8 +71,7 @@ const submit = async () => {
           v-model="form.phone"
           type="text"
           class="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300"
-          placeholder="+7 700 000 0000"
-        />
+          placeholder="+7 700 000 0000"/>
       </div>
 
       <div>
@@ -77,15 +80,13 @@ const submit = async () => {
           v-model="form.address"
           rows="2"
           class="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300"
-          placeholder="Қала, көше, ғимарат"
-        ></textarea>
+          placeholder="Қала, көше, ғимарат"></textarea>
       </div>
 
       <button
         type="submit"
         class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
-        :disabled="loading"
-      >
+        :disabled="loading">
         {{ loading ? 'Жіберілуде...' : 'Қосу' }}
       </button>
     </form>

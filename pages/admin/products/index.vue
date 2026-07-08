@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useUserStore } from '~/stores/user'
-import { usePartnerStore } from '~/stores/partner'
-import { useApi } from '@/composables/useApi'
+import { useUserStore } from '~/entities/user'
+import { usePartnerStore } from '~/entities/partner'
+import { useApi } from '~/shared/api'
 
 const { get, post, del } = useApi()
 const userStore = useUserStore()
@@ -25,11 +25,11 @@ async function loadProducts() {
     products.value = data
   } else if (activeTab.value === 'active') {
     // Барлық активный өнімдер
-    const { data } = await get(`/products?status=active`)
+    const { data } = await get('/products?status=active')
     products.value = data
   } else {
     // Барлық активный өнімдер
-    const { data } = await get(`/products?status=inactive`)
+    const { data } = await get('/products?status=inactive')
     products.value = data
   }
 }
@@ -43,7 +43,7 @@ async function deleteProduct(id) {
   }
 
   await del(`/admin/products/${id}`, userStore.token)
-  
+
   products.value = products.value.filter(p => p.id !== id)
 }
 
@@ -67,22 +67,19 @@ const removeProduct = async (id) => {
     <div class="flex gap-4 mb-6 border-b pb-2">
       <button
         :class="['px-4 py-2', activeTab === 'my' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-500']"
-        @click="activeTab = 'my'"
-      >
+        @click="activeTab = 'my'">
         Өз өнімдері
       </button>
 
       <button
         :class="['px-4 py-2', activeTab === 'active' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-500']"
-        @click="activeTab = 'active'"
-      >
+        @click="activeTab = 'active'">
         Бүкіл активный өнімдер
       </button>
 
       <button
         :class="['px-4 py-2', activeTab === 'inactive' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-500']"
-        @click="activeTab = 'inactive'"
-      >
+        @click="activeTab = 'inactive'">
         Бүкіл неактивный өнімдер
       </button>
     </div>
@@ -95,13 +92,11 @@ const removeProduct = async (id) => {
         <button
           v-if="activeTab === 'my'"
           @click="router.push('/admin/products/new')"
-          class="btn-primary"
-        >
+          class="btn-primary">
           + Жаңа өнім
         </button>
       </div>
     </div>
-
 
     <!-- TABLE -->
     <table class="min-w-full bg-white border rounded-lg shadow">
@@ -119,7 +114,10 @@ const removeProduct = async (id) => {
       </thead>
 
       <tbody>
-        <tr v-for="p in products" :key="p.id" class="border-b align-top">
+        <tr
+          v-for="p in products"
+          :key="p.id"
+          class="border-b align-top">
           <td class="p-3">{{ p.id }}</td>
           <td class="p-3">{{ p.name }}</td>
 
@@ -128,8 +126,7 @@ const removeProduct = async (id) => {
               class="w-[100px]"
               v-for="(item, index) in p.images"
               :key="index"
-              :src="`http://127.0.0.1:8000/storage/${item.path}`"
-            />
+              :src="`http://127.0.0.1:8000/storage/${item.path}`"/>
           </td>
 
           <td class="p-3 w-[200px] word-break">{{ p.description }}</td>
@@ -141,38 +138,33 @@ const removeProduct = async (id) => {
             <button
               @click="router.push(`/admin/products/${p.id}/edit`)"
               class="w-full text-blue-600 hover:underline mr-2"
-              v-if="activeTab === 'my'|| activeTab === 'inactive'"
-            >
+              v-if="activeTab === 'my'|| activeTab === 'inactive'">
               Өзгерту
             </button>
 
             <button
               @click="deleteProduct(p.id)"
               class="w-full text-red-600 hover:underline"
-              v-if="activeTab === 'my'"
-            >
+              v-if="activeTab === 'my'">
               Жою
             </button>
 
             <button
               @click="approveJoin(p.id)"
               class="w-full text-green-600 hover:underline"
-              v-if="activeTab === 'active' && !productsPartner.some(e=>e.id===p.id)"
-            >
+              v-if="activeTab === 'active' && !productsPartner.some(e=>e.id===p.id)">
               Қосылу
             </button>
             <span
               v-if="activeTab === 'active' && p.status === 'pending' && productsPartner.some(e=>e.id===p.id)"
-              class="text-yellow-600 font-semibold"
-            >
+              class="text-yellow-600 font-semibold">
               Тексерілуде...
             </span>
 
             <button
               v-if="activeTab === 'active' && productsPartner.some(e=>e.id===p.id)"
               @click="removeProduct(p.id)"
-              class="text-red-600 hover:underline"
-            >
+              class="text-red-600 hover:underline">
               Өшіру
             </button>
           </td>

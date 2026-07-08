@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { usePartnerStore } from '~/stores/partner'
-import { useApi } from '@/composables/useApi'
+import { usePartnerStore } from '~/entities/partner'
+import { useApi } from '~/shared/api'
 
 const router = useRouter()
 const partnerStore = usePartnerStore()
@@ -77,46 +77,63 @@ function clearForm() {
     </h1>
 
     <div v-if="!isLogin">
-      <input v-model="company_name" type="text" placeholder="Атыңыз" class="input mb-2" />
+      <input
+        v-model="company_name"
+        type="text"
+        placeholder="Атыңыз"
+        class="input mb-2" />
     </div>
 
-    <input v-model="email" type="email" placeholder="Email" class="input mb-2" />
-    <input v-model="password" type="password" placeholder="Құпиясөз" class="input mb-2" />
+    <input
+      v-model="email"
+      type="email"
+      placeholder="Email"
+      class="input mb-2" />
+    <input
+      v-model="password"
+      type="password"
+      placeholder="Құпиясөз"
+      class="input mb-2" />
     <div v-if="!isLogin">
       <input
         v-model="passwordConfirm"
         type="password"
         placeholder="Құпиясөзді қайталаңыз"
-        class="input mb-4"
-      />
+        class="input mb-4"/>
     </div>
 
     <button
       v-if="isLogin"
       @click="login"
-      class="btn-primary w-full"
-    >
+      class="btn-primary w-full">
       Кіру
     </button>
     <button
       v-else
       @click="register"
-      class="btn-primary w-full"
-    >
+      class="btn-primary w-full">
       Тіркелу
     </button>
 
-    <p v-if="error" class="text-red-500 mt-3 text-center">{{ error }}</p>
-    <p v-if="success" class="text-green-600 mt-3 text-center">{{ success }}</p>
+    <p
+      v-if="error"
+      class="text-red-500 mt-3 text-center">{{ error }}</p>
+    <p
+      v-if="success"
+      class="text-green-600 mt-3 text-center">{{ success }}</p>
 
     <p class="text-center text-sm mt-4 text-gray-600">
       <span v-if="isLogin">
         Тіркелмегенсіз бе?
-        <button @click="isLogin = false" class="text-blue-600 underline">Тіркелу</button>
+        <button
+          @click="isLogin = false"
+          class="text-blue-600 underline">Тіркелу</button>
       </span>
       <span v-else>
         Аккаунтыңыз бар ма?
-        <button @click="isLogin = true" class="text-blue-600 underline">Кіру</button>
+        <button
+          @click="isLogin = true"
+          class="text-blue-600 underline">Кіру</button>
       </span>
     </p>
   </div>

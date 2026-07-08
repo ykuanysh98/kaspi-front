@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import Header from '~/widgets/header/ui/index.vue'
+import Footer from '~/widgets/footer/ui/index.vue'
+
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import type { AxiosError } from 'axios'
 
-import { useUserStore } from '~/stores/user'
-import { usePartnerStore } from '~/stores/partner'
-import { useApi } from '@/composables/useApi'
+import { useUserStore } from '~/entities/user'
+import { usePartnerStore } from '~/entities/partner'
+import { useApi } from '~/shared/api'
 
 const userStore = useUserStore()
 const partnerStore = usePartnerStore()
@@ -30,11 +33,11 @@ interface PartnerResponse extends UserResponse {
 }
 
 const loadUser = async () => {
-  try { 
+  try {
 
     if (isAdmin.value) {
       const res = await get<PartnerResponse>(url.value)
-      partnerStore.setPartner(res) 
+      partnerStore.setPartner(res)
     } else {
       const res = await get<UserResponse>(url.value)
       userStore.setUser(res)

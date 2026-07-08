@@ -9,9 +9,15 @@
 
       <!-- Optional Links / Social -->
       <div class="flex gap-4 justify-center md:justify-end">
-        <a href="#" class="hover:text-blue-600 transition">Privacy</a>
-        <a href="#" class="hover:text-blue-600 transition">Terms</a>
-        <a href="#" class="hover:text-blue-600 transition">Contact</a>
+        <a
+          href="#"
+          class="hover:text-blue-600 transition">Privacy</a>
+        <a
+          href="#"
+          class="hover:text-blue-600 transition">Terms</a>
+        <a
+          href="#"
+          class="hover:text-blue-600 transition">Contact</a>
       </div>
 
     </div>

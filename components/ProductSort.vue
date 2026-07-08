@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { useProductStore } from '~/stores/product'
+import { useProductStore } from '~/entities/product'
 const store = useProductStore()
 
 const apply = async () => {

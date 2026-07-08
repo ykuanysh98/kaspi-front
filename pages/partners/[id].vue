@@ -25,7 +25,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useApi } from '~/composables/useApi'
+import { useApi } from '~/shared/api'
 
 const { get } = useApi()
 const route = useRoute()
