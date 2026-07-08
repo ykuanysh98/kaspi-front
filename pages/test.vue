@@ -8,7 +8,7 @@ const {
   add,
   remove,
   update,
-  find,
+  find
 } = useList<User>()
 
 const name = ref<string>('')
@@ -18,7 +18,7 @@ type User = {
   id: number
   name: string
   email: string
-  role: 'admin' | 'user'   // union type
+  role: 'admin' | 'user' // union type
   url: string
 }
 
@@ -29,7 +29,6 @@ interface Product {
   price: number
   inStock: boolean
 }
- 
 
 // 2. API fetch функциясы
 async function fetchData<T>(url: string): Promise<T> {
@@ -39,7 +38,7 @@ async function fetchData<T>(url: string): Promise<T> {
 
 // const user = await fetchData<User>('/api/user/1')
 // const list = await fetchData<Product[]>('/api/products')
- 
+
 // ------------ IGNORE ---
 
 function getFirst<T>(arr: T[]): T | undefined {
@@ -51,25 +50,23 @@ function getFirst<T>(arr: T[]): T | undefined {
   <div>
     {{ user?.url }}
     <div>{{ doubled }}</div>
-    
-    {{ getFirst<number>([1, 2, 3]) }} 
-    {{ getFirst<string>(['a','b']) }} 
+
+    {{ getFirst<number>([1, 2, 3]) }}
+    {{ getFirst<string>(['a','b']) }}
     {{ getFirst([true, false]) }}
 
-<hr />
+    <hr />
 
-    <TestChild 
-      :title="name" 
-      :count="count" 
-      :items="['a', 'b']" 
+    <TestChild
+      :title="name"
+      :count="count"
+      :items="['a', 'b']"
       @increment="increment"
-      @reset="reset"
-    />
+      @reset="reset"/>
 
-    <TestChild2 
-      :username="name" 
-      :age="30" 
-      @messageSent="msg => console.log('Message from child:', msg)"
-    />
+    <TestChild2
+      :username="name"
+      :age="30"
+      @messageSent="msg => console.log('Message from child:', msg)"/>
   </div>
 </template>

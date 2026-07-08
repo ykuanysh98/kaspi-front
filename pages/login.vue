@@ -56,38 +56,41 @@ const register = async () => {
   <div class="flex justify-center items-center">
     <div class="w-full max-w-md bg-white rounded-2xl shadow p-6">
       <h1 class="text-2xl font-bold mb-4 text-center">
-        {{ isLogin ? 'Кіру' : 'Тіркелу' }}
+        {{ isLogin ? 'Кіру' : 'Тіркелу'   }}
       </h1>
 
       <div v-if="!isLogin">
-        <input v-model="name" placeholder="Атыңыз" class="input" />
+        <input
+          v-model="name"
+          placeholder="Атыңыз"
+          class="input" />
       </div>
 
-      <input v-model="email" placeholder="Email" type="email" class="input" />
-      <input v-model="password" placeholder="Құпия сөз" type="password" class="input" />
+      <input
+        v-model="email"
+        placeholder="Email"
+        type="email"
+        class="input" />
+      <input
+        v-model="password"
+        placeholder="Құпия сөз"
+        type="password"
+        class="input" />
 
-      <button
-        v-if="isLogin"
-        @click="login"
-        class="btn-primary mt-4 w-full"
-      >
-        Кіру
-      </button>
-      <button
-        v-else
-        @click="register"
-        class="btn-primary mt-4 w-full"
-      >
-        Тіркелу
-      </button>
+      <UiButton
+        class="mt-4"
+        variant="primary"
+        @click="isLogin ? login() : register"
+        block>
+        {{isLogin ? 'Кіру' : 'Тіркелу'}}
+      </UiButton>
 
       <p class="mt-2 text-sm text-gray-600 text-center">{{ message }}</p>
 
       <div class="text-center mt-4">
         <button
           @click="isLogin = !isLogin"
-          class="text-blue-600 hover:underline text-sm"
-        >
+          class="text-blue-600 hover:underline text-sm">
           {{ isLogin ? 'Тіркелу бетіне өту' : 'Кіру бетіне өту' }}
         </button>
       </div>
@@ -98,8 +101,5 @@ const register = async () => {
 <style scoped>
 .input {
   @apply w-full border rounded-lg p-2 mb-2;
-}
-.btn-primary {
-  @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg;
 }
 </style>
