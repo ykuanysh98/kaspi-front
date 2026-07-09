@@ -1,26 +1,20 @@
-
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted } from 'vue'
 import { useProductStore } from '~/entities/product'
-import { useDebounce } from '~/shared/lib/debounce/useDebounce'
+import { CategorySelectItem } from '~/entities/category'
+import type { Category } from '~/entities/category'
+import { useDebounce } from '~/shared/lib/debounce'
 import { useRoute, useRouter } from 'vue-router'
 import { useApi } from '~/shared/api'
-
-import CategorySelectItem from './сategorySelectItem.vue'
+import type { LocalFilters } from '../model/types'
 
 const router = useRouter()
 const route = useRoute()
 const store = useProductStore()
-const debouncedFetch = useDebounce(store.fetchList, 400)
-
-type LocalFilters = {
-  search: string
-  min_price: number | ''
-  max_price: number | ''
-  category_id: number | ''
-}
+const debouncedFetch = useDebounce(() => store.fetchList(), 400)
 
 const parseNumber = (val: unknown): number | '' => {
+  if (val === undefined || val === null || val === '') return ''
   const n = Number(val)
   return isNaN(n) ? '' : n
 }
@@ -32,15 +26,13 @@ const local = reactive<LocalFilters>({
   category_id: ''
 })
 
-const categories = ref([])
+const categories = ref<Category[]>([])
 const { get } = useApi()
 
 const syncFromQuery = () => {
   const q = route.query
 
-  const search = typeof q.search === 'string' ? q.search : ''
-
-  local.search = search
+  local.search = typeof q.search === 'string' ? q.search : ''
   local.min_price = parseNumber(q.min_price)
   local.max_price = parseNumber(q.max_price)
   local.category_id = parseNumber(q.category_id)
@@ -57,11 +49,11 @@ onMounted(async () => {
 const apply = () => {
   router.replace({
     query: {
-      ...router.currentRoute.value.query,
+      ...route.query,
       search: local.search || undefined,
-      min_price: local.min_price || undefined,
-      max_price: local.max_price || undefined,
-      category_id: local.category_id || undefined
+      min_price: local.min_price === '' ? undefined : local.min_price,
+      max_price: local.max_price === '' ? undefined : local.max_price,
+      category_id: local.category_id === '' ? undefined : local.category_id
     }
   })
 }

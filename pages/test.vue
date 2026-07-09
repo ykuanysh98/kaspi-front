@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 
-import { useCounter } from '@/composables/useCounter'
+import { useCounter } from '~/shared/lib/use-counter'
 const { count, doubled, increment, reset } = useCounter(10)
+
+import { useList } from '@/shared/lib/use-list'
 const {
   items: users,
   add,

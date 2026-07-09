@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useToggle } from '@/composables/useCounter'
+import { useToggle } from '@/shared/lib/use-toggle'
 const { isOn, toggle, turnOn, turnOff } = useToggle()
 
 interface Props {
   username: string
-  age?: number 
+  age?: number
 }
 
-const props =withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   username: 'Guest',
   age: 18
 })
@@ -39,35 +39,35 @@ function deleteItem(id: number) {
 //----------
 
 function identity<T>(arg: T):T {
-  return arg;
+  return arg
 }
 
 // Осылай жұмыс істеуі керек:
-const n = identity<number>(42);    // type: number
-const s = identity<string>('hi'); // type: string
+const n = identity<number>(42) // type: number
+const s = identity<string>('hi') // type: string
 
-console.log(n, s);
+console.log(n, s)
 
 //----------
 
 function makePair<T, U>(first: T, second: U) {
-  return [first, second];
+  return [first, second]
 }
 
 // Нәтиже типтері дәл болуы керек:
-const p = makePair('age', 25);
+const p = makePair('age', 25)
 // p[0]: string, p[1]: number
 
-console.log(typeof p[0], typeof p[1]);
+console.log(typeof p[0], typeof p[1])
 
 //-------------
 function getProperty<O,K extends keyof O>(obj: O, key:K):O[K] | void {
-  return console.log(obj[key]);
+  return console.log(obj[key])
 }
 
-const user = { name: 'Асан', age: 30 };
-getProperty(user, 'name'); // OK
-getProperty(user, 'email'); // ERROR болуы керек
+const user = { name: 'Асан', age: 30 }
+getProperty(user, 'name') // OK
+getProperty(user, 'email') // ERROR болуы керек
 
 </script>
 
@@ -81,7 +81,9 @@ getProperty(user, 'email'); // ERROR болуы керек
     </button>
 
     <div v-if="isVisible">
-      <input v-model="message" placeholder="Type a message" />
+      <input
+        v-model="message"
+        placeholder="Type a message" />
       <button @click="sendMessage">Send Message</button>
     </div>
   </div>

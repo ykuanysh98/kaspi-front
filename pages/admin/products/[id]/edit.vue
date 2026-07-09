@@ -2,8 +2,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useApi } from '~/shared/api'
+import { Multiselect } from '~/shared/ui/multiselect'
 import { usePartnerStore } from '~/entities/partner'
-import Multiselect from '../../../../components/multiselect.vue'
 
 const route = useRoute()
 const router = useRouter()

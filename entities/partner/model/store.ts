@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useCookie } from "#app";
+import { useApi } from "@/shared/api";
 import type { Partner } from "./types";
 import { TOKEN_KEYS } from "~/shared/lib/token-storage/model/tokenStorage";
 
@@ -7,6 +8,7 @@ export const usePartnerStore = defineStore("partner", {
   state: () => ({
     token: null as string | null,
     partner: null as Partner | null,
+    current: null as Partner | null,
   }),
 
   actions: {
@@ -38,6 +40,15 @@ export const usePartnerStore = defineStore("partner", {
 
     setPartner(data: Partner) {
       this.partner = data;
+    },
+
+    async fetchById(id: string | number) {
+      const { get } = useApi();
+      try {
+        this.current = await get(`/partners/${id}`);
+      } catch (e) {
+        console.error("Partner fetch error:", e);
+      }
     },
   },
 });

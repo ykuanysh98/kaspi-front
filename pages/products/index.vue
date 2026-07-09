@@ -3,6 +3,9 @@ import { onMounted } from 'vue'
 import { useProductStore } from '~/entities/product'
 import { useCart } from '@/entities/cart'
 import Product from '~/widgets/product-card/ui/ProductCardWithActions.vue'
+import { Pagination } from '@/shared/ui/pagination'
+import { ProductFilters } from '@/features/filter-products'
+import { ProductSort } from '@/features/filter-products'
 
 const { loadCart } = useCart()
 const productStore = useProductStore()
