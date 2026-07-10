@@ -3,7 +3,6 @@ import Header from '~/widgets/header/ui/index.vue'
 import { Footer } from '~/shared/ui/footer'
 
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
 import type { AxiosError } from 'axios'
 
 import { useUserStore } from '~/entities/user'
@@ -14,13 +13,10 @@ const userStore = useUserStore()
 const partnerStore = usePartnerStore()
 const { get } = useApi()
 
-const route = useRoute()
-
 userStore.loadToken()
 partnerStore.loadToken()
 
-const isAdmin = computed(() => route.path.startsWith('/admin'))
-const url = computed(() => isAdmin.value ? '/admin/me' : '/user')
+const url = computed(() => '/user')
 
 interface UserResponse {
   id: number
@@ -28,20 +24,11 @@ interface UserResponse {
   email: string
 }
 
-interface PartnerResponse extends UserResponse {
-  company_name: string[]
-}
-
 const loadUser = async () => {
   try {
 
-    if (isAdmin.value) {
-      const res = await get<PartnerResponse>(url.value)
-      partnerStore.setPartner(res)
-    } else {
-      const res = await get<UserResponse>(url.value)
-      userStore.setUser(res)
-    }
+    const res = await get<UserResponse>(url.value)
+    userStore.setUser(res)
 
   } catch (error: unknown) {
     const err = error as AxiosError
