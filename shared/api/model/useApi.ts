@@ -1,16 +1,14 @@
 import axios, { type AxiosInstance } from "axios";
 import { useRoute, useRuntimeConfig } from "#app";
 import { computed } from "vue";
-import {
-  getToken,
-  TOKEN_KEYS,
-} from "../../lib/token-storage/model/tokenStorage";
+import { getToken, TOKEN_KEYS } from "../../lib/token-storage";
 
 export const useApi = () => {
   const route = useRoute();
   const isAdmin = computed(() => route.path.startsWith("/admin"));
   const config = useRuntimeConfig();
-  const baseURL = config.public.API_BASE || "http://127.0.0.1:8000/api";
+  const baseURL =
+    (config.public.API_BASE as string) || "http://127.0.0.1:8000/api";
 
   const api: AxiosInstance = axios.create({ baseURL });
 

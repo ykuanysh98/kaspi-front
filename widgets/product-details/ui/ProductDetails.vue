@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useApi } from '~/shared/api'
-import ProductAddModal from '~/features/add-to-cart/ui/ProductAddModal.vue'
+import { ProductAddModal } from '~/features/add-to-cart'
 
 const { get } = useApi()
 const route = useRoute()

@@ -1,11 +1,10 @@
 <script setup>
 import { onMounted } from 'vue'
+import { ProductCardWithActions } from '~/widgets/product-card'
+import { ProductSort, ProductFilters } from '@/features/filter-products'
 import { useProductStore } from '~/entities/product'
 import { useCart } from '@/entities/cart'
-import Product from '~/widgets/product-card/ui/ProductCardWithActions.vue'
 import { Pagination } from '@/shared/ui/pagination'
-import { ProductFilters } from '@/features/filter-products'
-import { ProductSort } from '@/features/filter-products'
 
 const { loadCart } = useCart()
 const productStore = useProductStore()
@@ -31,7 +30,7 @@ const changePage = async (page) => {
 
     <!-- Product Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <Product
+      <ProductCardWithActions
         v-for="p in productStore.list"
         :key="p.id"
         :product="p"

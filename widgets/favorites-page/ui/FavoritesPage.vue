@@ -1,5 +1,5 @@
 <script setup>
-import Product from '~/widgets/product-card/ui/ProductCardWithActions.vue'
+import { ProductCardWithActions } from '~/widgets/product-card'
 import { onMounted, computed } from 'vue'
 import { useFavorites } from '@/entities/favorite'
 
@@ -16,7 +16,7 @@ onMounted(() => fetchFavorites())
     <div
       v-if="list.length"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <Product
+      <ProductCardWithActions
         v-for="p in list"
         :key="p.id"
         :product="p" />

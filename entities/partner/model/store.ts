@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { useCookie } from "#app";
 import { useApi } from "@/shared/api";
 import type { Partner } from "./types";
-import { TOKEN_KEYS } from "~/shared/lib/token-storage/model/tokenStorage";
+import { TOKEN_KEYS } from "~/shared/lib/token-storage";
 
 export const usePartnerStore = defineStore("partner", {
   state: () => ({

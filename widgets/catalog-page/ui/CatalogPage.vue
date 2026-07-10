@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useCategoryStore } from '~/stores/category'
+import { useCategoryStore } from '~/entities/category'
 import { CategoryItem } from '~/entities/category'
 
 const store = useCategoryStore()

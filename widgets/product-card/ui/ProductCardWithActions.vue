@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { Product } from '@/entities/product'
+import { ProductCard } from '@/entities/product'
+import { FavoriteButton } from '@/features/toggle-favorite'
+import { CartControl } from '@/features/add-to-cart'
 
 interface Props {
   product: Product
