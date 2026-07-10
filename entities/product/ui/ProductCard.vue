@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import type { Product } from '../model/types'
 import { getProductImage } from '../lib/getProductImage'
 import { formatMoney } from '~/shared/lib/format/money'
+import { Card } from '~/shared/ui/card'
 
 interface Props {
   product: Product
@@ -13,7 +14,10 @@ const router = useRouter()
 </script>
 
 <template>
-  <div class="min-w-[200px] relative pointer bg-white rounded-xl shadow-sm hover:shadow-lg hover:scale-105 transform transition duration-300 ease-in-out flex flex-col justify-between overflow-hidden">
+  <Card
+    hoverable
+    padding="p-0"
+    class="min-w-[200px] relative pointer flex flex-col justify-between overflow-hidden hover:scale-105 transform duration-300 ease-in-out">
     <div
       class="relative w-full h-48 md:h-56 overflow-hidden cursor-pointer"
       @click="router.push(`/products/${props.product.id}`)">
@@ -34,5 +38,5 @@ const router = useRouter()
       <!-- Cart action slot -->
       <slot name="cart-action" />
     </div>
-  </div>
+  </Card>
 </template>

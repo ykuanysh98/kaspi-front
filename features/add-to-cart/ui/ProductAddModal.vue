@@ -5,6 +5,7 @@ import { useProductStore } from '@/entities/product'
 import type { Product } from '@/entities/product'
 import { Modal } from '~/shared/ui/modal'
 import { formatMoney } from '~/shared/lib/format/money'
+import { Quantity } from '~/shared/ui/quantity'
 
 const { addToCart } = useCart()
 const productStore = useProductStore()
@@ -84,18 +85,6 @@ const pivotPrice = (p: Partner | null) =>
 const pivotStock = (p: Partner | null) =>
   p?.pivot?.quantity ?? p?.quantity ?? null
 
-const increase = () => {
-  if (selectedPartner.value && pivotStock(selectedPartner.value) !== null) {
-    if (quantity.value < (pivotStock(selectedPartner.value) as number)) quantity.value++
-  } else {
-    quantity.value++
-  }
-}
-
-const decrease = () => {
-  if (quantity.value > 1) quantity.value--
-}
-
 const canSave = computed(() => {
   return !!selectedPartner.value && quantity.value > 0
 })
@@ -165,27 +154,23 @@ async function handleAddToCart() {
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-3">
             <span class="text-sm text-gray-600">Саны:</span>
-            <div class="flex items-center border rounded">
-              <button
-                @click="decrease"
-                class="px-3 py-1">−</button>
-              <div class="px-4">{{ quantity }}</div>
-              <button
-                @click="increase"
-                class="px-3 py-1">+</button>
-            </div>
+            <Quantity
+              v-model="quantity"
+              :max="selectedPartner ? pivotStock(selectedPartner) : null" />
             <div
               v-if="selectedPartner && pivotStock(selectedPartner) !== null"
               class="text-sm text-gray-500 ml-3">
               Қойма: {{ pivotStock(selectedPartner) }}
             </div>
           </div>
-          <button
+          <Button
             @click="handleAddToCart"
-            :disabled="!canSave || saving"
-            class="max-w-[200px] flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded disabled:opacity-60">
-            {{ saving && action === 'cart' ? 'Сақталуда...' : 'Себетке қосу' }}
-          </button>
+            :disabled="!canSave"
+            :loading="saving"
+            variant="primary"
+            class="max-w-[200px] flex-1">
+            Себетке қосу
+          </Button>
         </div>
 
         <p

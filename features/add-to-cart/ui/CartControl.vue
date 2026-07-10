@@ -2,7 +2,7 @@
 import { useCart } from '@/entities/cart'
 import type { Product } from '@/entities/product'
 import ProductAddModal from './ProductAddModal.vue'
-import { Button } from '~/shared/ui/button'
+import { Quantity } from '~/shared/ui/quantity'
 
 interface Props {
   product: Product
@@ -13,6 +13,17 @@ const { cartItems, increase, decrease } = useCart()
 
 const findInCart = (id: number) =>
   cartItems.value?.find((p) => p.product_id === id || p.id === id)
+
+const updateQuantity = (val: number) => {
+  const item = findInCart(props.product.id)
+  if (!item) return
+  const partnerId = item.partner_id
+  if (val > item.quantity) {
+    increase(props.product.id, partnerId ?? 0, props.product)
+  } else if (val < item.quantity) {
+    decrease(props.product.id, partnerId ?? 0)
+  }
+}
 </script>
 
 <template>
@@ -23,19 +34,10 @@ const findInCart = (id: number) =>
   </div>
   <div
     v-else
-    class="flex items-center justify-between border rounded-lg px-1 py-0.5 mt-2 bg-gray-50">
-    <Button
-      variant="ghost"
-      class="!p-1 text-lg font-bold"
-      @click.stop="decrease(props.product.id, findInCart(props.product.id)?.partner_id ?? 0)">
-      −
-    </Button>
-    <span class="font-semibold text-gray-800 text-sm">{{ findInCart(props.product.id)?.quantity ?? 0 }}</span>
-    <Button
-      variant="ghost"
-      class="!p-1 text-lg font-bold"
-      @click.stop="increase(props.product.id, findInCart(props.product.id)?.partner_id ?? 0, props.product)">
-      +
-    </Button>
+    class="flex items-center justify-between mt-2">
+    <Quantity
+      :modelValue="findInCart(props.product.id)?.quantity ?? 1"
+      @update:modelValue="updateQuantity"
+      class="w-full" />
   </div>
 </template>

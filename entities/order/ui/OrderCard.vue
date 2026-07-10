@@ -1,5 +1,6 @@
-<script setup>
+<script setup lang="ts">
 import { formatMoney } from '~/shared/lib/format/money'
+import { Card } from '~/shared/ui/card'
 
 defineProps({
   order: {
@@ -10,7 +11,9 @@ defineProps({
 </script>
 
 <template>
-  <div class="border rounded-xl p-5 mb-5 shadow hover:shadow-lg transition bg-white border-card">
+  <Card
+    hoverable
+    class="mb-5">
     <!-- Header: Order ID and Date -->
     <div class="flex justify-between items-center mb-3">
       <span class="font-semibold text-gray-800">Тапсырыс #{{ order.id }}</span>
@@ -43,12 +46,5 @@ defineProps({
         Статус: {{ order.status }}
       </span>
     </div>
-  </div>
+  </Card>
 </template>
-
-<style scoped>
-.border-card:hover {
-  transform: translateY(-2px);
-  transition: all 0.2s ease;
-}
-</style>

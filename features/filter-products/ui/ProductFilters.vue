@@ -7,6 +7,7 @@ import { useDebounce } from '~/shared/lib/debounce'
 import { useRoute, useRouter } from 'vue-router'
 import type { LocalFilters } from '../model/types'
 import { Input } from '~/shared/ui/input'
+import { Select } from '~/shared/ui/select'
 
 const router = useRouter()
 const route = useRoute()
@@ -99,14 +100,13 @@ watch(
     </div>
 
     <!-- Category Select -->
-    <div class="w-48 mb-2">
-      <select
+    <div class="w-48">
+      <Select
         v-model="local.category_id"
-        @change="apply"
-        class="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-        <option value="">Барлығы</option>
+        placeholder="Барлығы"
+        @change="apply">
         <CategorySelectItem :categories="categories" />
-      </select>
+      </Select>
     </div>
 
   </div>
