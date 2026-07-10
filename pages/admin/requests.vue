@@ -1,6 +1,7 @@
 <script setup>
+import { useApi } from '~/shared/api'
 import { ref, onMounted } from 'vue'
-const { get, post, del } = useApi()
+const { get, post } = useApi()
 
 const tab = ref('activation')
 const activationRequests = ref([])
@@ -52,16 +53,14 @@ onMounted(() => {
       <button
         class="pb-2"
         :class="tab === 'activation' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-500'"
-        @click="tab = 'activation'"
-      >
+        @click="tab = 'activation'">
         Активация запросы
       </button>
 
       <button
         class="pb-2"
         :class="tab === 'join' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-500'"
-        @click="tab = 'join'"
-      >
+        @click="tab = 'join'">
         Қосылу запросы
       </button>
     </div>
@@ -73,8 +72,7 @@ onMounted(() => {
       <div
         v-for="item in activationRequests"
         :key="item.id"
-        class="border p-4 rounded mb-3 flex justify-between items-center"
-      >
+        class="border p-4 rounded mb-3 flex justify-between items-center">
         <div>
           <p><b>Партнер Өнімі:</b> {{ item.product?.name }}</p>
           <p><b>Партнер:</b> {{ item.partner?.name }}</p>
@@ -82,17 +80,15 @@ onMounted(() => {
         </div>
 
         <div class="flex gap-2">
-          <button 
+          <button
             @click="approveActivation(item.product.id)"
-            class="px-3 py-1 bg-green-600 text-white rounded"
-          >
+            class="px-3 py-1 bg-green-600 text-white rounded">
             Қосу
           </button>
 
-          <button 
+          <button
             @click="rejectActivation(item.product.id)"
-            class="px-3 py-1 bg-red-600 text-white rounded"
-          >
+            class="px-3 py-1 bg-red-600 text-white rounded">
             Отказ
           </button>
         </div>
@@ -106,8 +102,7 @@ onMounted(() => {
       <div
         v-for="item in joinRequests"
         :key="item.id"
-        class="border p-4 rounded mb-3 flex justify-between items-center"
-      >
+        class="border p-4 rounded mb-3 flex justify-between items-center">
         <div>
           <p><b>Активный Өнім:</b> {{ item.product?.name }}</p>
           <p><b>Партнер:</b> {{ item.partner?.name }}</p>
@@ -115,17 +110,15 @@ onMounted(() => {
         </div>
 
         <div class="flex gap-2">
-          <button 
+          <button
             @click="approveJoin(item.id)"
-            class="px-3 py-1 bg-green-600 text-white rounded"
-          >
+            class="px-3 py-1 bg-green-600 text-white rounded">
             Қосу
           </button>
 
-          <button 
+          <button
             @click="rejectJoin(item.id)"
-            class="px-3 py-1 bg-red-600 text-white rounded"
-          >
+            class="px-3 py-1 bg-red-600 text-white rounded">
             Отказ
           </button>
         </div>
