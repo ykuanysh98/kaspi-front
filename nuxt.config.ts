@@ -15,4 +15,7 @@ export default defineNuxtConfig({
     { path: "~/features", pathPrefix: false },
     { path: "~/widgets", prefix: "Widget" },
   ],
+  dir: {
+    shared: "nuxt-shared",
+  },
 });

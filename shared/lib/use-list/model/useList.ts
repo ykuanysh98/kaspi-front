@@ -1,43 +1,14 @@
-import { ref, computed } from "vue";
+import { useList as libraryList } from "ku-ui-kit";
 
 export function useList<T>(initial: T[] = []) {
-  const items = ref<T[]>([...initial]) as import("vue").Ref<T[]>;
-
-  const add = (item: T) => {
-    items.value.push(item);
-  };
-
-  const removeByIndex = (index: number) => {
-    if (index < 0 || index >= items.value.length) return;
-    items.value.splice(index, 1);
-  };
-
-  const remove = (predicate: (item: T) => boolean) => {
-    items.value = items.value.filter((i) => !predicate(i));
-  };
-
-  const update = (predicate: (item: T) => boolean, updater: (item: T) => T) => {
-    items.value = items.value.map((i) => (predicate(i) ? updater(i) : i));
-  };
-
-  const find = (predicate: (item: T) => boolean) => {
-    return items.value.find(predicate);
-  };
-
-  const clear = () => {
-    items.value = [];
-  };
-
-  const count = computed(() => items.value.length);
-
-  return {
-    items,
-    add,
-    remove,
-    removeByIndex,
-    update,
-    find,
-    clear,
-    count,
+  return libraryList(initial) as unknown as ReturnType<typeof libraryList> & {
+    items: import("vue").Ref<T[]>;
+    add: (item: T) => void;
+    removeByIndex: (index: number) => void;
+    remove: (predicate: (item: T) => boolean) => void;
+    update: (predicate: (item: T) => boolean, updater: (item: T) => T) => void;
+    find: (predicate: (item: T) => boolean) => T | undefined;
+    clear: () => void;
+    count: import("vue").ComputedRef<number>;
   };
 }
