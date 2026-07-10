@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useCart } from '@/entities/cart'
-import { useRouter } from 'vue-router'
 import { useProductStore } from '@/entities/product'
 import type { Product } from '@/entities/product'
+import { Modal } from '~/shared/ui/modal'
+import { formatMoney } from '~/shared/lib/format/money'
 
 const { addToCart } = useCart()
 const productStore = useProductStore()
@@ -35,8 +36,6 @@ const error = ref('')
 const success = ref('')
 const saving = ref(false)
 const action = ref('')
-
-const router = useRouter()
 
 onMounted(() => {
   if (props.choice) {
@@ -116,11 +115,6 @@ async function handleAddToCart() {
   }
 }
 
-async function handleBuyNow() {
-  if (!selectedPartner.value) return
-  await addToCart(props.product, selectedPartner.value, quantity.value)
-  router.push('/checkout')
-}
 </script>
 
 <template>
@@ -131,90 +125,76 @@ async function handleBuyNow() {
       Таңдау
     </button>
 
-    <teleport to="body">
+    <Modal
+      v-model="show"
+      :title="`Тауар: ${product.name}`"
+      @close="close">
       <div
-        v-if="show"
-        class="fixed inset-0 z-50 flex items-center justify-center">
+        v-if="loadingPartners"
+        class="py-6 text-center">Жүктелуде...</div>
+
+      <div v-else>
+        <p class="text-sm text-gray-600 mb-2">
+          {{
+            props.choice === false
+              ? 'Дүкенді таңдаңыз:'
+              : `Дүкенді: ${(props.choice as Partner).company_name}`
+          }}
+        </p>
+
         <div
-          class="absolute inset-0 bg-black/50"
-          @click="close"></div>
-
-        <div class="relative bg-white rounded-lg w-full max-w-xl mx-4 p-6 z-10 shadow-lg">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">Тауар: {{ product.name }}</h3>
-            <button
-              @click="close"
-              class="text-gray-500 hover:text-gray-800">✕</button>
-          </div>
-
-          <div
-            v-if="loadingPartners"
-            class="py-6 text-center">Жүктелуде...</div>
-
-          <div v-else>
-            <p class="text-sm text-gray-600 mb-2">
-              {{
-                props.choice === false
-                  ? 'Дүкенді таңдаңыз:'
-                  : `Дүкенді: ${(props.choice as Partner).company_name}`
-              }}
-            </p>
-
-            <div
-              v-if="props.choice === false"
-              class="max-h-40 overflow-auto space-y-2 mb-4">
-              <label
-                v-for="p in partners"
-                :key="p.id"
-                class="flex items-center gap-3 p-2 border rounded hover:bg-gray-50">
-                <input
-                  type="radio"
-                  name="partner"
-                  :value="p"
-                  v-model="selectedPartner"
-                  class="accent-green-600"/>
-                <div class="flex-1">
-                  <div class="font-medium">{{ p.company_name }}</div>
-                  <div class="text-sm text-gray-500">Баға: {{ pivotPrice(p) }} ₸ · Қойма: {{ pivotStock(p) }}</div>
-                </div>
-              </label>
+          v-if="props.choice === false"
+          class="max-h-40 overflow-auto space-y-2 mb-4">
+          <label
+            v-for="p in partners"
+            :key="p.id"
+            class="flex items-center gap-3 p-2 border rounded hover:bg-gray-50">
+            <input
+              type="radio"
+              name="partner"
+              :value="p"
+              v-model="selectedPartner"
+              class="accent-green-600"/>
+            <div class="flex-1">
+              <div class="font-medium">{{ p.company_name }}</div>
+              <div class="text-sm text-gray-500">Баға: {{ formatMoney(pivotPrice(p)) }} ₸ · Қойма: {{ pivotStock(p) }}</div>
             </div>
-
-            <div class="flex items-center gap-3">
-              <div class="flex items-center gap-3">
-                <span class="text-sm text-gray-600">Саны:</span>
-                <div class="flex items-center border rounded">
-                  <button
-                    @click="decrease"
-                    class="px-3 py-1">−</button>
-                  <div class="px-4">{{ quantity }}</div>
-                  <button
-                    @click="increase"
-                    class="px-3 py-1">+</button>
-                </div>
-                <div
-                  v-if="selectedPartner && pivotStock(selectedPartner) !== null"
-                  class="text-sm text-gray-500 ml-3">
-                  Қойма: {{ pivotStock(selectedPartner) }}
-                </div>
-              </div>
-              <button
-                @click="handleAddToCart"
-                :disabled="!canSave || saving"
-                class="max-w-[200px] flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded disabled:opacity-60">
-                {{ saving && action === 'cart' ? 'Сақталуда...' : 'Себетке қосу' }}
-              </button>
-            </div>
-
-            <p
-              v-if="error"
-              class="mt-3 text-red-600 text-sm">{{ error }}</p>
-            <p
-              v-if="success"
-              class="mt-3 text-green-600 text-sm">{{ success }}</p>
-          </div>
+          </label>
         </div>
+
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-gray-600">Саны:</span>
+            <div class="flex items-center border rounded">
+              <button
+                @click="decrease"
+                class="px-3 py-1">−</button>
+              <div class="px-4">{{ quantity }}</div>
+              <button
+                @click="increase"
+                class="px-3 py-1">+</button>
+            </div>
+            <div
+              v-if="selectedPartner && pivotStock(selectedPartner) !== null"
+              class="text-sm text-gray-500 ml-3">
+              Қойма: {{ pivotStock(selectedPartner) }}
+            </div>
+          </div>
+          <button
+            @click="handleAddToCart"
+            :disabled="!canSave || saving"
+            class="max-w-[200px] flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded disabled:opacity-60">
+            {{ saving && action === 'cart' ? 'Сақталуда...' : 'Себетке қосу' }}
+          </button>
+        </div>
+
+        <p
+          v-if="error"
+          class="mt-3 text-red-600 text-sm">{{ error }}</p>
+        <p
+          v-if="success"
+          class="mt-3 text-green-600 text-sm">{{ success }}</p>
       </div>
-    </teleport>
+    </Modal>
   </div>
 </template>

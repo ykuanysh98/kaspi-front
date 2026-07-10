@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { LoginForm, RegisterForm } from '~/features/auth'
+import { Button } from '~/shared/ui/button'
 
 const isLogin = ref(true)
 </script>
@@ -16,11 +17,11 @@ const isLogin = ref(true)
       <RegisterForm v-else />
 
       <div class="text-center mt-4">
-        <button
-          @click="isLogin = !isLogin"
-          class="text-blue-600 hover:underline text-sm">
+        <Button
+          variant="ghost"
+          @click="isLogin = !isLogin">
           {{ isLogin ? 'Тіркелу бетіне өту' : 'Кіру бетіне өту' }}
-        </button>
+        </Button>
       </div>
     </div>
   </div>

@@ -1,7 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { useCart } from '@/entities/cart'
 import { useUserStore } from '~/entities/user'
 import { useApi } from '~/shared/api'
+import { Button } from '~/shared/ui/button'
 
 const { cartItems } = useCart()
 const { post } = useApi()
@@ -34,10 +35,10 @@ const submitOrder = async () => {
 </script>
 
 <template>
-  <button
+  <Button
     v-if="userStore.token"
-    @click="submitOrder"
-    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition">
+    variant="primary"
+    @click="submitOrder">
     Тапсырыс беру
-  </button>
+  </Button>
 </template>

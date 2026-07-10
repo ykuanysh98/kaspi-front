@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '~/entities/user'
 import { useCart } from '~/entities/cart'
+import { Button } from '~/shared/ui/button'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -32,10 +33,12 @@ const logout = () => {
         class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition">Пользователи</NuxtLink>
 
       <!-- Шығу -->
-      <button
+      <Button
         v-if="userStore.token"
-        @click="logout"
-        class="px-3 py-2 rounded-md text-red-600 font-medium hover:text-white hover:bg-red-600 transition">Шығу</button>
+        variant="danger"
+        @click="logout">
+        Шығу
+      </Button>
     </div>
 
     <!-- Профиль -->
@@ -57,7 +60,3 @@ const logout = () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Tailwind арқылы стиль толық қосылды, қосымша CSS қажет емес */
-</style>

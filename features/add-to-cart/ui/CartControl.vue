@@ -2,6 +2,7 @@
 import { useCart } from '@/entities/cart'
 import type { Product } from '@/entities/product'
 import ProductAddModal from './ProductAddModal.vue'
+import { Button } from '~/shared/ui/button'
 
 interface Props {
   product: Product
@@ -22,17 +23,19 @@ const findInCart = (id: number) =>
   </div>
   <div
     v-else
-    class="flex items-center justify-between border rounded-lg px-2 py-1 mt-2 bg-gray-50">
-    <button
-      @click.stop="decrease(props.product.id, findInCart(props.product.id).partner_id)"
-      class="text-xl font-bold text-gray-600 hover:text-red-600 transition">
+    class="flex items-center justify-between border rounded-lg px-1 py-0.5 mt-2 bg-gray-50">
+    <Button
+      variant="ghost"
+      class="!p-1 text-lg font-bold"
+      @click.stop="decrease(props.product.id, findInCart(props.product.id)?.partner_id ?? 0)">
       −
-    </button>
-    <span class="font-semibold text-gray-800">{{ findInCart(props.product.id).quantity }}</span>
-    <button
-      @click.stop="increase(props.product.id, findInCart(props.product.id).partner_id, props.product)"
-      class="text-xl font-bold text-gray-600 hover:text-green-600 transition">
+    </Button>
+    <span class="font-semibold text-gray-800 text-sm">{{ findInCart(props.product.id)?.quantity ?? 0 }}</span>
+    <Button
+      variant="ghost"
+      class="!p-1 text-lg font-bold"
+      @click.stop="increase(props.product.id, findInCart(props.product.id)?.partner_id ?? 0, props.product)">
       +
-    </button>
+    </Button>
   </div>
 </template>

@@ -1,4 +1,6 @@
 <script setup>
+import { formatMoney } from '~/shared/lib/format/money'
+
 defineProps({
   order: {
     type: Object,
@@ -21,12 +23,12 @@ defineProps({
       :key="item.id"
       class="flex justify-between mb-1 text-gray-700">
       <span>{{ item.product.name }} x {{ item.quantity }}</span>
-      <span>{{ item.price * item.quantity }} ₸</span>
+      <span>{{ formatMoney(item.price * item.quantity) }} ₸</span>
     </div>
 
     <!-- Total -->
     <div class="mt-3 font-bold text-right text-gray-800 text-lg">
-      Жалпы: {{ order.total }} ₸
+      Жалпы: {{ formatMoney(order.total) }} ₸
     </div>
 
     <!-- Status -->

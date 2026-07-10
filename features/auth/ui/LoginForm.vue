@@ -1,9 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '~/entities/user'
 import { useCart } from '@/entities/cart'
 import { useApi } from '~/shared/api'
+import { Button } from '~/shared/ui/button'
+import { Input } from '~/shared/ui/input'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -31,31 +33,23 @@ const login = async () => {
 
 <template>
   <div>
-    <input
+    <Input
       v-model="email"
       placeholder="Email"
-      type="email"
-      class="input" />
-    <input
+      type="email" />
+    <Input
       v-model="password"
       placeholder="Құпия сөз"
-      type="password"
-      class="input" />
+      type="password" />
 
-    <UiButton
+    <Button
       class="mt-4"
       variant="primary"
       @click="login"
       block>
       Кіру
-    </UiButton>
+    </Button>
 
     <p class="mt-2 text-sm text-gray-600 text-center">{{ message }}</p>
   </div>
 </template>
-
-<style scoped>
-.input {
-  @apply w-full border rounded-lg p-2 mb-2;
-}
-</style>

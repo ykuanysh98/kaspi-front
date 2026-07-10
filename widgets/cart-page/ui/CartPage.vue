@@ -4,6 +4,8 @@ import { computed, onMounted } from 'vue'
 import { useCart } from '@/entities/cart'
 import { useUserStore } from '~/entities/user'
 import { SubmitOrderButton } from '~/features/create-order'
+import { Button } from '~/shared/ui/button'
+import { formatMoney } from '~/shared/lib/format/money'
 
 const { cartItems, increase, decrease, loadCart } = useCart()
 const userStore = useUserStore()
@@ -47,26 +49,26 @@ const totalPrice = computed(() =>
         </div>
 
         <div class="flex gap-2 items-center">
-          <button
-            @click="decrease(item.product.id, findInCart(item.product.id).partner_id)"
-            class="px-3 py-1 border rounded hover:bg-red-100 transition">−</button>
+          <Button
+            variant="secondary"
+            class="!px-3 !py-1"
+            @click="decrease(item.product.id, findInCart(item.product.id).partner_id)">
+            −
+          </Button>
           <span class="font-semibold">{{ item.quantity }}</span>
-          <button
-            @click="increase(item.product.id, findInCart(item.product.id).partner_id, item)"
-            class="px-3 py-1 border rounded hover:bg-green-100 transition">+</button>
+          <Button
+            variant="secondary"
+            class="!px-3 !py-1"
+            @click="increase(item.product.id, findInCart(item.product.id).partner_id, item)">
+            +
+          </Button>
         </div>
       </div>
       <!-- Total and checkout -->
       <div class="mt-8 flex flex-col sm:flex-row justify-between items-center font-bold text-gray-800 gap-4">
-        <span class="text-lg">Жалпы: {{ totalPrice }} ₸</span>
+        <span class="text-lg">Жалпы: {{ formatMoney(totalPrice) }} ₸</span>
         <SubmitOrderButton />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-button {
-  transition: all 0.2s ease;
-}
-</style>

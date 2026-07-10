@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import type { Product } from '../model/types'
 import { getProductImage } from '../lib/getProductImage'
+import { formatMoney } from '~/shared/lib/format/money'
 
 interface Props {
   product: Product
@@ -27,7 +28,7 @@ const router = useRouter()
 
     <div class="p-4 flex flex-col gap-2">
       <h2 class="font-bold text-lg text-gray-800 truncate">{{ props.product.name }}</h2>
-      <p class="text-gray-700 font-semibold">{{ props.product.price }} ₸</p>
+      <p class="text-gray-700 font-semibold">{{ formatMoney(props.product.price) }} ₸</p>
       <p class="text-gray-700 font-semibold">{{ props.product.partners?.[0]?.pivot.quantity || 0 }} шт.</p>
 
       <!-- Cart action slot -->

@@ -6,6 +6,7 @@ import type { Category } from '~/entities/category'
 import { useDebounce } from '~/shared/lib/debounce'
 import { useRoute, useRouter } from 'vue-router'
 import type { LocalFilters } from '../model/types'
+import { Input } from '~/shared/ui/input'
 
 const router = useRouter()
 const route = useRoute()
@@ -69,39 +70,44 @@ watch(
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-3 mb-4">
+  <div class="flex flex-wrap gap-3 items-end mb-4">
 
     <!-- Search -->
-    <input
-      v-model="local.search"
-      @input="apply"
-      placeholder="Іздеу..."
-      class="border border-gray-300 rounded-lg px-4 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"/>
+    <div class="w-full sm:w-64">
+      <Input
+        v-model="local.search"
+        placeholder="Іздеу..."
+        @input="apply" />
+    </div>
 
     <!-- Min Price -->
-    <input
-      v-model.number="local.min_price"
-      @input="apply"
-      type="number"
-      placeholder="Мин. баға"
-      class="border border-gray-300 rounded-lg px-4 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"/>
+    <div class="w-32">
+      <Input
+        v-model.number="local.min_price"
+        type="number"
+        placeholder="Мин. баға"
+        @input="apply" />
+    </div>
 
     <!-- Max Price -->
-    <input
-      v-model.number="local.max_price"
-      @input="apply"
-      type="number"
-      placeholder="Макс. баға"
-      class="border border-gray-300 rounded-lg px-4 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"/>
+    <div class="w-32">
+      <Input
+        v-model.number="local.max_price"
+        type="number"
+        placeholder="Макс. баға"
+        @input="apply" />
+    </div>
 
     <!-- Category Select -->
-    <select
-      v-model="local.category_id"
-      @change="apply"
-      class="border border-gray-300 rounded-lg px-4 py-2 w-48 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-      <option value="">Барлығы</option>
-      <CategorySelectItem :categories="categories" />
-    </select>
+    <div class="w-48 mb-2">
+      <select
+        v-model="local.category_id"
+        @change="apply"
+        class="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+        <option value="">Барлығы</option>
+        <CategorySelectItem :categories="categories" />
+      </select>
+    </div>
 
   </div>
 </template>

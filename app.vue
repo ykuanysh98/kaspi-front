@@ -36,7 +36,7 @@ const loadUser = async () => {
   }
 }
 
-await loadUser()
+loadUser()
 </script>
 
 <template>
