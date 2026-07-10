@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useApi } from '~/shared/api'
 import { useCart } from '@/entities/cart'
 import { useRouter } from 'vue-router'
+import { useProductStore } from '@/entities/product'
 import type { Product } from '@/entities/product'
 
 const { addToCart } = useCart()
+const productStore = useProductStore()
 
 interface Partner {
   id: number
@@ -35,7 +36,6 @@ const success = ref('')
 const saving = ref(false)
 const action = ref('')
 
-const { get, post } = useApi()
 const router = useRouter()
 
 onMounted(() => {
@@ -68,9 +68,8 @@ const close = () => {
 async function loadPartnersFromApi() {
   loadingPartners.value = true
   try {
-    const res = await get(`/products/${props.product.id}`)
-    const prod = res.product ?? res
-    partners.value = prod.partners || []
+    await productStore.fetchById(props.product.id)
+    partners.value = (productStore.current?.partners || []) as unknown as Partner[]
     selectedPartner.value = partners.value[0] || null
   } catch (e) {
     console.error(e)
@@ -103,13 +102,14 @@ const canSave = computed(() => {
 })
 
 async function handleAddToCart() {
+  if (!selectedPartner.value) return
   saving.value = true
   action.value = 'cart'
   try {
     await addToCart(props.product, selectedPartner.value, quantity.value)
     success.value = 'Себетке қосылды'
     close()
-  } catch (e) {
+  } catch {
     error.value = 'Себетке қосу мүмкін болмады'
   } finally {
     saving.value = false
@@ -117,6 +117,7 @@ async function handleAddToCart() {
 }
 
 async function handleBuyNow() {
+  if (!selectedPartner.value) return
   await addToCart(props.product, selectedPartner.value, quantity.value)
   router.push('/checkout')
 }

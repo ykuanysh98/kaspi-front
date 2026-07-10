@@ -1,20 +1,15 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useApi } from '~/shared/api'
+import { useProductStore } from '~/entities/product'
 import { ProductAddModal } from '~/features/add-to-cart'
 
-const { get } = useApi()
 const route = useRoute()
-const product = ref(null)
+const productStore = useProductStore()
+const product = computed(() => productStore.current)
 
 onMounted(async () => {
-  try {
-    const { data } = await get(`/products/${route.params.id}`)
-    product.value = data
-  } catch (e) {
-    console.error('Өнімді жүктеу қатесі:', e)
-  }
+  await productStore.fetchById(route.params.id)
 })
 </script>
 
@@ -26,7 +21,7 @@ onMounted(async () => {
       <!-- Product image + info -->
       <div class="flex flex-col md:flex-row gap-6">
         <img
-          :src="`http://127.0.0.1:8000/storage/${product.imeges?.[0]?.path}`"
+          :src="`http://127.0.0.1:8000/storage/${product.images?.[0]?.path}`"
           alt="Product Image"
           class="w-full md:w-1/2 max-h-[300px] object-cover rounded-lg"/>
 

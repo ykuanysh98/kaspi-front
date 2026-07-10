@@ -1,15 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useApi } from '~/shared/api'
+import { onMounted, computed } from 'vue'
+import { useUserStore } from '~/entities/user'
 
-const { get } = useApi()
-const users = ref([])
+const userStore = useUserStore()
+const users = computed(() => userStore.usersList)
 
 onMounted(async () => {
   try {
-    users.value = await get('/users')
-  } catch (err) {
-    console.error(err)
+    await userStore.fetchUsersList()
+  } catch {
     alert('❌ Клиенттерді жүктеу мүмкін болмады')
   }
 })

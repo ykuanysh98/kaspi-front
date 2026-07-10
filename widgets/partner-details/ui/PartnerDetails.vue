@@ -1,21 +1,18 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useApi } from '~/shared/api'
+import { usePartnerStore } from '~/entities/partner'
 import { PartnerReviews } from '~/widgets/partner-reviews'
-import { ProductCardWithActions } from '~/widgets/product-card'
+import { ProductCard } from '@/entities/product'
+import { FavoriteButton } from '@/features/toggle-favorite'
+import { CartControl } from '@/features/add-to-cart'
 
-const { get } = useApi()
 const route = useRoute()
-const partner = ref(null)
+const partnerStore = usePartnerStore()
+const partner = computed(() => partnerStore.current)
 
 onMounted(async () => {
-  try {
-    const data = await get(`/partners/${route.params.id}`)
-    partner.value = data
-  } catch (e) {
-    console.error('Сатушыны жүктеу қатесі:', e)
-  }
+  await partnerStore.fetchById(route.params.id)
 })
 </script>
 
@@ -35,10 +32,20 @@ onMounted(async () => {
     <div
       v-if="partner && partner.products?.length"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <ProductCardWithActions
+      <ProductCard
         v-for="p in partner.products"
         :key="p.id"
-        :product="p" />
+        :product="p">
+        <template #favorite>
+          <FavoriteButton
+            :productId="p.id"
+            :isFavorite="p.is_favorite" />
+        </template>
+
+        <template #cart-action>
+          <CartControl :product="p" />
+        </template>
+      </ProductCard>
     </div>
 
     <div

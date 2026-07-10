@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted } from 'vue'
 import { useProductStore } from '~/entities/product'
-import { CategorySelectItem } from '~/entities/category'
+import { CategorySelectItem, useCategoryStore } from '~/entities/category'
 import type { Category } from '~/entities/category'
 import { useDebounce } from '~/shared/lib/debounce'
 import { useRoute, useRouter } from 'vue-router'
-import { useApi } from '~/shared/api'
 import type { LocalFilters } from '../model/types'
 
 const router = useRouter()
@@ -26,8 +25,8 @@ const local = reactive<LocalFilters>({
   category_id: ''
 })
 
+const categoryStore = useCategoryStore()
 const categories = ref<Category[]>([])
-const { get } = useApi()
 
 const syncFromQuery = () => {
   const q = route.query
@@ -41,7 +40,8 @@ const syncFromQuery = () => {
 }
 
 onMounted(async () => {
-  categories.value = await get('/categories')
+  await categoryStore.fetchCategories()
+  categories.value = categoryStore.categories
   syncFromQuery()
   debouncedFetch()
 })

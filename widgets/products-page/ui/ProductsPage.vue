@@ -1,6 +1,8 @@
 <script setup>
 import { onMounted } from 'vue'
-import { ProductCardWithActions } from '~/widgets/product-card'
+import { ProductCard } from '@/entities/product'
+import { FavoriteButton } from '@/features/toggle-favorite'
+import { CartControl } from '@/features/add-to-cart'
 import { ProductSort, ProductFilters } from '@/features/filter-products'
 import { useProductStore } from '~/entities/product'
 import { useCart } from '@/entities/cart'
@@ -30,11 +32,21 @@ const changePage = async (page) => {
 
     <!-- Product Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <ProductCardWithActions
+      <ProductCard
         v-for="p in productStore.list"
         :key="p.id"
         :product="p"
-        class="transform hover:scale-105 transition duration-300 ease-in-out"/>
+        class="transform hover:scale-105 transition duration-300 ease-in-out">
+        <template #favorite>
+          <FavoriteButton
+            :productId="p.id"
+            :isFavorite="p.is_favorite" />
+        </template>
+
+        <template #cart-action>
+          <CartControl :product="p" />
+        </template>
+      </ProductCard>
     </div>
 
     <!-- Pagination -->

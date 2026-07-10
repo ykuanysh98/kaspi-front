@@ -6,6 +6,7 @@ export const useProductStore = defineStore("product", {
   state: () => ({
     list: [] as Product[],
     loading: false,
+    current: null as Product | null,
     filters: {
       search: "",
       category_id: null,
@@ -19,6 +20,19 @@ export const useProductStore = defineStore("product", {
   }),
 
   actions: {
+    async fetchById(id: string | number) {
+      try {
+        const { get } = useApi();
+        this.loading = true;
+        const res = await get(`/products/${id}`);
+        this.current = res.data;
+      } catch (e) {
+        console.error("Product fetch error:", e);
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async fetchList(page = 1) {
       try {
         const { get } = useApi();

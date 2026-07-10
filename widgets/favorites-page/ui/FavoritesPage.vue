@@ -1,5 +1,7 @@
 <script setup>
-import { ProductCardWithActions } from '~/widgets/product-card'
+import { ProductCard } from '@/entities/product'
+import { FavoriteButton } from '@/features/toggle-favorite'
+import { CartControl } from '@/features/add-to-cart'
 import { onMounted, computed } from 'vue'
 import { useFavorites } from '@/entities/favorite'
 
@@ -16,10 +18,20 @@ onMounted(() => fetchFavorites())
     <div
       v-if="list.length"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <ProductCardWithActions
+      <ProductCard
         v-for="p in list"
         :key="p.id"
-        :product="p" />
+        :product="p">
+        <template #favorite>
+          <FavoriteButton
+            :productId="p.id"
+            :isFavorite="p.is_favorite" />
+        </template>
+
+        <template #cart-action>
+          <CartControl :product="p" />
+        </template>
+      </ProductCard>
     </div>
 
     <p

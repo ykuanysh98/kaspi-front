@@ -2,11 +2,10 @@
 import { computed, onMounted } from 'vue'
 
 import { useCart } from '@/entities/cart'
-import { useApi } from '~/shared/api'
 import { useUserStore } from '~/entities/user'
+import { SubmitOrderButton } from '~/features/create-order'
 
 const { cartItems, increase, decrease, loadCart } = useCart()
-const { post } = useApi()
 const userStore = useUserStore()
 
 const findInCart = (id) => cartItems.value?.find((p) => p.product_id === id || p.id === id)
@@ -19,31 +18,6 @@ onMounted(async () => {
 const totalPrice = computed(() =>
   cartItems.value.reduce((sum, p) => sum + (p?.price || p?.product.price || 0) * p.quantity, 0)
 )
-
-const submitOrder = async () => {
-  try {
-    if (!userStore.token) {
-      alert('Сіз логин болуыңыз керек!')
-      return
-    }
-
-    const items = cartItems.value.map(item => ({
-      product_id: item.product_id,
-      partner_id: item.partner_id,
-      quantity: item.quantity
-    }))
-
-    const res = await post('/orders', { items })
-
-    alert('✅ ' + res.message)
-    // Тапсырыс сәтті болса — себетті тазалау
-    cartItems.value = []
-    localStorage.removeItem('cart')
-  } catch (err) {
-    console.error(err)
-    alert('❌ Қате шықты')
-  }
-}
 </script>
 
 <template>
@@ -85,12 +59,7 @@ const submitOrder = async () => {
       <!-- Total and checkout -->
       <div class="mt-8 flex flex-col sm:flex-row justify-between items-center font-bold text-gray-800 gap-4">
         <span class="text-lg">Жалпы: {{ totalPrice }} ₸</span>
-        <button
-          v-if="userStore.token"
-          @click="submitOrder"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition">
-          Тапсырыс беру
-        </button>
+        <SubmitOrderButton />
       </div>
     </div>
   </div>

@@ -1,28 +1,23 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useApi } from '~/shared/api'
 import { useUserStore } from '~/entities/user'
 import { useRouter } from 'vue-router'
 
-const { get, post } = useApi()
 const userStore = useUserStore()
 const router = useRouter()
 
 const form = ref({ name: '', email: '' })
 
-onMounted(async () => {
+onMounted(() => {
   form.value.name = userStore.user.name
   form.value.email = userStore.user.email
 })
 
 const save = async () => {
   try {
-    await post('/user', form.value)
-    const res = await get('/user')
-    userStore.setUser(res)
+    await userStore.updateProfile(form.value)
     router.push('/profile')
-  } catch (err) {
-    console.error(err)
+  } catch {
     alert('❌ Қате шықты, қайта көріңіз')
   }
 }
