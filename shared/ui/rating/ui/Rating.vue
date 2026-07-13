@@ -21,5 +21,5 @@ const emit = defineEmits<{
 <template>
   <LibraryRating
     v-bind="props"
-    @update:modelValue="val => emit('update:modelValue', val)" />
+    @update:modelValue="(val: number) => emit('update:modelValue', val)" />
 </template>

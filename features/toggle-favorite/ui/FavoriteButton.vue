@@ -3,7 +3,7 @@ import { useToggleFavorite } from '../model/useToggleFavorite'
 
 interface Props {
   productId: number
-  isFavorite?: boolean
+  isFavorite?: boolean | undefined
 }
 
 const props = defineProps<Props>()

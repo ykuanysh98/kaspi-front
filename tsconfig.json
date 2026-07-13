@@ -1,27 +1,16 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
-  "files": [],
+  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    // "strict": true,
-    // "noUncheckedIndexedAccess": true,
-    // "exactOptionalPropertyTypes": true,
-    // "noImplicitReturns": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true
-  },
-  "references": [
-    {
-      "path": "./.nuxt/tsconfig.app.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.server.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.shared.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.node.json"
-    }
-  ]
+    "strict": true,
+    // "noImplicitAny": true, // any типін қолдануды шектеу
+    // "strictNullChecks": true, // null және undefined типтерін міндетті түрде тексеруді талап ету
+    "noImplicitReturns": true, // функциядан міндетті түрде мән қайтарылуын талап ету
+    "allowUnreachableCode": true, // return немесе throw операторынан кейін жазылған блоктарды
+    "noFallthroughCasesInSwitch": true, // switch-те case-терді міндетті түрде break-пен аяқтауды талап ету
+    "noUnusedLocals": true, // қолданылмайтын айнымалыны көрсету
+    "noUnusedParameters": true, // қолданылмайтын параметрді көрсету
+    "noUncheckedIndexedAccess": true, // массивтен немесе объекттен элемент алғанда оның бар екенін тексеруді талап ету
+    "exactOptionalPropertyTypes": true // optional параметрлерді міндетті түрде тексеруді талап ету
+  }
 }

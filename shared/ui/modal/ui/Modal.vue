@@ -22,7 +22,7 @@ const emit = defineEmits<{
 <template>
   <LibraryModal
     v-bind="props"
-    @update:modelValue="val => emit('update:modelValue', val)"
+    @update:modelValue="(val: boolean) => emit('update:modelValue', val)"
     @close="emit('close')">
     <template v-if="$slots.header" #header>
       <slot name="header" />

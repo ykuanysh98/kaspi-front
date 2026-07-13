@@ -27,5 +27,5 @@ const emit = defineEmits<{
 <template>
   <LibraryTextarea
     v-bind="props"
-    @update:modelValue="val => emit('update:modelValue', val)" />
+    @update:modelValue="(val: string) => emit('update:modelValue', val)" />
 </template>

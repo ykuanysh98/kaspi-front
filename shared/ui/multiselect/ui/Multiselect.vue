@@ -26,5 +26,5 @@ const emit = defineEmits<{
 <template>
   <LibraryMultiselect
     v-bind="props"
-    @update:modelValue="val => emit('update:modelValue', val)" />
+    @update:modelValue="(val: ModelValue) => emit('update:modelValue', val)" />
 </template>

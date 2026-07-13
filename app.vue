@@ -6,6 +6,7 @@ import { computed } from 'vue'
 import type { AxiosError } from 'axios'
 
 import { useUserStore } from '~/entities/user'
+import type { User } from '~/entities/user'
 import { usePartnerStore } from '~/entities/partner'
 import { useApi } from '~/shared/api'
 
@@ -18,16 +19,10 @@ partnerStore.loadToken()
 
 const url = computed(() => '/user')
 
-interface UserResponse {
-  id: number
-  name?: string
-  email: string
-}
-
 const loadUser = async () => {
   try {
 
-    const res = await get<UserResponse>(url.value)
+    const res = await get<User>(url.value)
     userStore.setUser(res)
 
   } catch (error: unknown) {

@@ -24,6 +24,6 @@ const emit = defineEmits<{
 <template>
   <LibraryQuantity
     v-bind="props"
-    @update:modelValue="val => emit('update:modelValue', val)"
-    @change="val => emit('change', val)" />
+    @update:modelValue="(val: number) => emit('update:modelValue', val)"
+    @change="(val: number) => emit('change', val)" />
 </template>
