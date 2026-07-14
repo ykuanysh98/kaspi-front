@@ -8,7 +8,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "ts:fix": "npx vue-tsc --noEmit"
+    "ts:fix": "npx vue-tsc --noEmit",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.2",

@@ -1,0 +1,42 @@
+name: CI
+
+# Workflow қашан іске қосылатынын анықтаймыз (Triggers)
+on:
+  push:
+    branches: ["main", "master", "develop"]
+  pull_request:
+    branches: ["main", "master", "develop"]
+
+jobs:
+  # Бірінші Job: Тексеріс және жинақтау (build & test)
+  verify:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1-қадам: Репозиторийдегі кодты виртуалды машинаға жүктеп алу
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2-қадам: Node.js ортасын дайындау
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "yarn" # Yarn кэшін автоматты түрде пайдалану өнімділікті арттырады
+
+      # 3-қадам: Тәуелділіктерді (Dependencies) орнату
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # 4-қадам: Nuxt сәйкестігін дайындау (prepare)
+      - name: Prepare Nuxt
+        run: yarn postinstall
+
+      # 5-қадам: TypeScript типтерін тексеру
+      - name: Run Type Check
+        run: yarn ts:fix
+
+      # 6-қадам: Код стилін тексеру (Linter)
+      - name: Run Linter
+        run: yarn lint
