@@ -1,1 +1,1 @@
-export { default as ProfileEdit } from "./ui/ProfileEdit.vue";
+export { default as ProfileEdit } from './ui/ProfileEdit.vue'

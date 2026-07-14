@@ -1,1 +1,1 @@
-export { default as SubmitOrderButton } from "./ui/SubmitOrderButton.vue";
+export { default as SubmitOrderButton } from './ui/SubmitOrderButton.vue'

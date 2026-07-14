@@ -16,5 +16,5 @@ const emit = defineEmits<{
 <template>
   <LibraryPagination
     v-bind="props"
-    @page-change="(page: number) => emit('page-change', page)" />
+    @pageChange="(page: number) => emit('page-change', page)" />
 </template>

@@ -1,1 +1,1 @@
-export { default as Quantity } from "./ui/Quantity.vue";
+export { default as Quantity } from './ui/Quantity.vue'

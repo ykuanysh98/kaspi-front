@@ -24,10 +24,14 @@ const emit = defineEmits<{
     v-bind="props"
     @update:modelValue="(val: boolean) => emit('update:modelValue', val)"
     @close="emit('close')">
-    <template v-if="$slots.header" #header>
+    <template
+      v-if="$slots.header"
+      #header>
       <slot name="header" />
     </template>
-    <template v-if="$slots.title" #title>
+    <template
+      v-if="$slots.title"
+      #title>
       <slot name="title" />
     </template>
     <slot />

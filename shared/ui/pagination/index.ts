@@ -1,2 +1,2 @@
-export { default as Pagination } from "./ui/Pagination.vue";
-export type { PaginationMeta } from "./model/types";
+export { default as Pagination } from './ui/Pagination.vue'
+export type { PaginationMeta } from './model/types'

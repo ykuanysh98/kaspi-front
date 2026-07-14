@@ -1,1 +1,1 @@
-export { useToggle } from "./model/useToggle";
+export { useToggle } from './model/useToggle'

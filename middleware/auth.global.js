@@ -1,5 +1,5 @@
 // middleware/auth.global.js
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware((to) => {
   // Кукилерден токендерді алу
   const token = useCookie('token-kaspi').value
   const adminToken = useCookie('token-kaspi-admin').value
@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     if (!adminToken && to.path !== '/admin/login' && to.path !== '/admin/register') {
       return navigateTo('/admin/login')
     }
-  } 
+  }
   // 🟩 Қарапайым қолданушы беті болса
   else {
     // Токен жоқ болса → /login

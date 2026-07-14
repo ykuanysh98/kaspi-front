@@ -1,1 +1,1 @@
-export { getToken, TOKEN_KEYS } from "./model/tokenStorage";
+export { getToken, TOKEN_KEYS } from './model/tokenStorage'

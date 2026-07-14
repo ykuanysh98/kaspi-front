@@ -1,1 +1,1 @@
-declare module "ku-ui-kit";
+declare module 'ku-ui-kit';

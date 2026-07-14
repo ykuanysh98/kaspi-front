@@ -1,1 +1,1 @@
-export { default as Rating } from "./ui/Rating.vue";
+export { default as Rating } from './ui/Rating.vue'

@@ -1,1 +1,1 @@
-export { useApi } from "./model/useApi";
+export { useApi } from './model/useApi'

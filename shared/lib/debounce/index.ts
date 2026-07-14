@@ -1,1 +1,1 @@
-export { useDebounce } from "./model/useDebounce";
+export { useDebounce } from './model/useDebounce'

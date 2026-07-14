@@ -1,1 +1,1 @@
-export { useCounter } from "./model/useCounter";
+export { useCounter } from './model/useCounter'

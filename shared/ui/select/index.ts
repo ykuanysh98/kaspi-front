@@ -1,1 +1,1 @@
-export { default as Select } from "./ui/Select.vue";
+export { default as Select } from './ui/Select.vue'

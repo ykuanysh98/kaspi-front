@@ -1,1 +1,1 @@
-export { default as ProductCardWithActions } from "./ui/ProductCardWithActions.vue";
+export { default as ProductCardWithActions } from './ui/ProductCardWithActions.vue'

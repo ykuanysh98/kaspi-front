@@ -1,165 +1,166 @@
-import { ref, computed } from "vue";
-import { useApi } from "~/shared/api";
-import { useUserStore } from "~/entities/user";
-import type { CartItem, CartProduct, PartnerLike } from "./types";
+import { ref, computed } from 'vue'
+import { AxiosError } from 'axios'
+import { useApi } from '~/shared/api'
+import { useUserStore } from '~/entities/user'
+import type { CartItem, CartProduct, PartnerLike } from './types'
 
-const cartItems = ref<CartItem[]>([]);
+const cartItems = ref<CartItem[]>([])
 
 export function useCart() {
-  const { get, post } = useApi();
-  const userStore = useUserStore();
+  const { get, post } = useApi()
+  const userStore = useUserStore()
 
-  userStore.loadToken();
+  userStore.loadToken()
 
   const loadCart = async (): Promise<void> => {
     if (userStore.token) {
       try {
-        cartItems.value = await get("/cart");
+        cartItems.value = await get('/cart')
       } catch (e) {
-        console.error("Cart load error:", e);
+        console.error('Cart load error:', e)
       }
     } else {
-      const saved = localStorage.getItem("cart");
+      const saved = localStorage.getItem('cart')
       if (saved) {
-        cartItems.value = JSON.parse(saved);
+        cartItems.value = JSON.parse(saved)
       }
     }
-  };
+  }
 
   const saveLocal = (): void => {
-    localStorage.setItem("cart", JSON.stringify(cartItems.value));
-  };
+    localStorage.setItem('cart', JSON.stringify(cartItems.value))
+  }
 
   const updateCart = async (
     productId: number,
     partnerId: number | undefined,
     quantity = 1,
-    price?: number,
+    price?: number
   ): Promise<void> => {
     const item = cartItems.value.find(
-      (p) => p.id === productId || p.product_id === productId,
-    );
+      (p) => p.id === productId || p.product_id === productId
+    )
 
     if (
       item &&
       item.product?.partners.find((e) => e.id === partnerId)?.pivot.quantity ===
         item.quantity
     ) {
-      return;
+      return
     }
 
     if (userStore.token) {
       try {
-        const formData = new FormData();
-        formData.append("product_id", String(productId));
-        formData.append("partner_id", String(partnerId));
-        formData.append("quantity", String(quantity));
-        formData.append("price", String(+(price ?? 0)));
+        const formData = new FormData()
+        formData.append('product_id', String(productId))
+        formData.append('partner_id', String(partnerId))
+        formData.append('quantity', String(quantity))
+        formData.append('price', String(+(price ?? 0)))
 
-        await post("/cart/add", formData);
-        await loadCart();
-      } catch (e: any) {
-        console.error("Cart update error:", e);
-        alert(e?.response?.data?.message);
+        await post('/cart/add', formData)
+        await loadCart()
+      } catch (e) {
+        console.error('Cart update error:', e)
+        alert((e as AxiosError<{ message?: string }>)?.response?.data?.message)
       }
     } else if (item) {
-      item.quantity += quantity;
+      item.quantity += quantity
       if (item.quantity <= 0) {
-        cartItems.value = cartItems.value.filter((p) => p !== item);
+        cartItems.value = cartItems.value.filter((p) => p !== item)
       }
-      saveLocal();
+      saveLocal()
     } else if (quantity > 0) {
-      cartItems.value.push({ product_id: productId, quantity });
-      saveLocal();
+      cartItems.value.push({ product_id: productId, quantity })
+      saveLocal()
     }
-  };
+  }
 
   const addToCart = (
     product: CartProduct,
     partner: PartnerLike,
-    quantity?: number,
+    quantity?: number
   ): Promise<void> =>
-    updateCart(product.id, partner.id, quantity ?? 1, partner.pivot?.price);
+    updateCart(product.id, partner.id, quantity ?? 1, partner.pivot?.price)
 
   const increase = (
     productId: number,
     partnerId: number,
-    product: CartProduct,
+    product: CartProduct
   ): Promise<void> =>
     updateCart(
       productId,
       partnerId,
       1,
       product.partners?.find((e) => e.id === partnerId)?.pivot.price ??
-        product.price,
-    );
+        product.price
+    )
 
   const decrease = async (
     productId: number,
-    partnerId?: number,
+    partnerId?: number
   ): Promise<void> => {
     const item = cartItems.value.find(
       (p) =>
         p.product_id === productId ||
-        (p.id === productId && p.partner_id === partnerId),
-    );
-    if (!item) return;
+        (p.id === productId && p.partner_id === partnerId)
+    )
+    if (!item) return
 
     if (userStore.token) {
       try {
-        const newQty = 1;
+        const newQty = 1
 
         if (item.quantity > 0) {
-          const formData = new FormData();
-          formData.append("product_id", String(productId));
-          formData.append("partner_id", String(partnerId));
-          formData.append("quantity", String(newQty));
+          const formData = new FormData()
+          formData.append('product_id', String(productId))
+          formData.append('partner_id', String(partnerId))
+          formData.append('quantity', String(newQty))
 
-          await post("/cart/decrease", formData);
+          await post('/cart/decrease', formData)
         }
 
-        await loadCart();
+        await loadCart()
       } catch (e) {
-        console.error("Decrease error:", e);
+        console.error('Decrease error:', e)
       }
     } else {
       if (item.quantity > 1) {
-        item.quantity--;
+        item.quantity--
       } else {
-        cartItems.value = cartItems.value.filter((p) => p.id !== productId);
+        cartItems.value = cartItems.value.filter((p) => p.id !== productId)
       }
-      saveLocal();
+      saveLocal()
     }
-  };
+  }
 
   const mergeGuestCart = async (): Promise<void> => {
-    const guestCart = localStorage.getItem("cart");
+    const guestCart = localStorage.getItem('cart')
 
     if (userStore.token && guestCart) {
       try {
-        const parsed: CartItem[] = JSON.parse(guestCart);
-        await post("/merge-cart", {
+        const parsed: CartItem[] = JSON.parse(guestCart)
+        await post('/merge-cart', {
           guest_cart: parsed.map((i) => ({
             product_id: i.product_id,
-            quantity: i.quantity,
-          })),
-        });
-        localStorage.removeItem("cart");
-        await loadCart();
+            quantity: i.quantity
+          }))
+        })
+        localStorage.removeItem('cart')
+        await loadCart()
       } catch (e) {
-        console.error("Merge cart error:", e);
+        console.error('Merge cart error:', e)
       }
     }
-  };
+  }
 
   const clearCart = (): void => {
-    cartItems.value = [];
-    loadCart();
-  };
+    cartItems.value = []
+    loadCart()
+  }
 
   const totalPrice = computed(() =>
-    cartItems.value.reduce((sum, p) => sum + (p.price || 0) * p.quantity, 0),
-  );
+    cartItems.value.reduce((sum, p) => sum + (p.price || 0) * p.quantity, 0)
+  )
 
   return {
     cartItems,
@@ -169,6 +170,6 @@ export function useCart() {
     mergeGuestCart,
     loadCart,
     clearCart,
-    totalPrice,
-  };
+    totalPrice
+  }
 }

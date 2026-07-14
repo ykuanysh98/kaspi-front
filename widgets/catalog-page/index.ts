@@ -1,1 +1,1 @@
-export { default as CatalogPage } from "./ui/CatalogPage.vue";
+export { default as CatalogPage } from './ui/CatalogPage.vue'

@@ -6,14 +6,14 @@
 
 export function getFirst<T>(arr: T[]): T | undefined {
   // Өз кодыңызды осында жазыңыз:
-  return arr[0];
+  return arr[0]
 }
 
 // --- ТЕКСЕРУ ТЕСТТЕРІ ---
-const testNum = getFirst([100, 200, 300]); // 'number | undefined'
-const testStr = getFirst(["TypeScript", "Vue", "Nuxt"]); // 'string | undefined'
+const testNum = getFirst([100, 200, 300]) // 'number | undefined'
+const testStr = getFirst(['TypeScript', 'Vue', 'Nuxt']) // 'string | undefined'
 
-console.log(testNum, testStr);
+console.log(testNum, testStr)
 
 /**
  * ----------------------------------------------------
@@ -23,22 +23,22 @@ console.log(testNum, testStr);
 
 export function getProperty<O, K extends keyof O>(obj: O, key: K): O[K] {
   // Өз кодыңызды осында жазыңыз:
-  return obj[key];
+  return obj[key]
 }
 
 // --- ТЕКСЕРУ ТЕСТТЕРІ ---
 interface User {
   id: number;
   name: string;
-  role: "admin" | "user";
+  role: 'admin' | 'user';
 }
 
-const user: User = { id: 1, name: "Asan", role: "admin" };
+const user: User = { id: 1, name: 'Asan', role: 'admin' }
 
-const userName = getProperty(user, "name"); // OK: userName типі 'string'
-const userRole = getProperty(user, "role"); // OK: userRole типі '"admin" | "user"'
+const userName = getProperty(user, 'name') // OK: userName типі 'string'
+const userRole = getProperty(user, 'role') // OK: userRole типі '"admin" | "user"'
 
-console.log(userName, userRole);
+console.log(userName, userRole)
 
 /**
  * ----------------------------------------------------
@@ -56,24 +56,24 @@ interface DetailedUser {
 }
 
 // Осы типтерді өзгертіңіз:
-export type UserPreview = Pick<DetailedUser, "id" | "email">; // Pick - бұл типтің ішінен кейбір өрістерді алады
-export type UserWithoutPassword = Omit<DetailedUser, "passwordHash">; // Omit - бұл типтің ішінен кейбір өрістерді алып тастайды
+export type UserPreview = Pick<DetailedUser, 'id' | 'email'>; // Pick - бұл типтің ішінен кейбір өрістерді алады
+export type UserWithoutPassword = Omit<DetailedUser, 'passwordHash'>; // Omit - бұл типтің ішінен кейбір өрістерді алып тастайды
 
 // --- ТЕКСЕРУ ТЕСТТЕРІ (Бұл жерге тиіспеңіз) ---
 const preview: UserPreview = {
   id: 42,
-  email: "test@kaspi.kz",
-};
+  email: 'test@kaspi.kz'
+}
 
 const cleanUser: UserWithoutPassword = {
   id: 1,
-  username: "ykuanysh",
-  email: "y@kaspi.kz",
-  phoneNumber: "8777...",
-  address: "Almaty",
-};
+  username: 'ykuanysh',
+  email: 'y@kaspi.kz',
+  phoneNumber: '8777...',
+  address: 'Almaty'
+}
 
-console.log(preview, cleanUser);
+console.log(preview, cleanUser)
 
 /**
  * ----------------------------------------------------
@@ -99,16 +99,16 @@ console.log(preview, cleanUser);
  */
 
 interface LoadingState {
-  status: "loading";
+  status: 'loading';
 }
 
 interface SuccessState {
-  status: "success";
+  status: 'success';
   data: string;
 }
 
 interface ErrorState {
-  status: "error";
+  status: 'error';
   error: string;
 }
 
@@ -119,26 +119,26 @@ export type ApiResponse = LoadingState | SuccessState | ErrorState;
 export function handleResponse(state: ApiResponse): string {
   // Өз кодыңызды осында жазыңыз:
   switch (state.status) {
-    case "loading":
-      return "Жүктелуде...";
-    case "success":
-      return `Мәлімет: ${state.data}`;
-    case "error":
-      return `Қате: ${state.error}`;
+    case 'loading':
+      return 'Жүктелуде...'
+    case 'success':
+      return `Мәлімет: ${state.data}`
+    case 'error':
+      return `Қате: ${state.error}`
   }
 }
 
 // --- ТЕКСЕРУ ТЕСТТЕРІ ---
-const loadState: ApiResponse = { status: "loading" };
+const loadState: ApiResponse = { status: 'loading' }
 const succState: ApiResponse = {
-  status: "success",
-  data: "Қолданушылар тізімі",
-};
+  status: 'success',
+  data: 'Қолданушылар тізімі'
+}
 const errState: ApiResponse = {
-  status: "error",
-  error: "Сервер жауап бермеді",
-};
+  status: 'error',
+  error: 'Сервер жауап бермеді'
+}
 
-console.log(handleResponse(loadState)); // Жүктелуде...
-console.log(handleResponse(succState)); // Мәлімет: Қолданушылар тізімі
-console.log(handleResponse(errState)); // Қате: Сервер жауап бермеді
+console.log(handleResponse(loadState)) // Жүктелуде...
+console.log(handleResponse(succState)) // Мәлімет: Қолданушылар тізімі
+console.log(handleResponse(errState)) // Қате: Сервер жауап бермеді

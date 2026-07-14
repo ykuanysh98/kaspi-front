@@ -1,1 +1,1 @@
-export { default as Table } from "./ui/Table.vue";
+export { default as Table } from './ui/Table.vue'
