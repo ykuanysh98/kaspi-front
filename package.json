@@ -10,7 +10,9 @@
     "postinstall": "nuxt prepare",
     "ts:fix": "npx vue-tsc --noEmit",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.2",
@@ -23,12 +25,16 @@
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
   "devDependencies": {
+    "@nuxt/test-utils": "^4.0.3",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@vue/eslint-config-typescript": "^14.9.0",
+    "@vue/test-utils": "^2.4.11",
     "eslint": "^9.39.4",
     "eslint-plugin-vue": "^10.9.2",
+    "happy-dom": "^20.10.6",
     "typescript": "^5.0.0",
+    "vitest": "^4.1.10",
     "vue-tsc": "^3.2.8"
   }
 }
