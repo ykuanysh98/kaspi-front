@@ -40,3 +40,7 @@ jobs:
       # 6-қадам: Код стилін тексеру (Linter)
       - name: Run Linter
         run: yarn lint
+
+      # 7-қадам: Тесттерді іске қосу (Vitest)
+      - name: Run Tests
+        run: yarn test:run

@@ -25,6 +25,7 @@ lint_and_type_check:
   script:
     - yarn ts:fix
     - yarn lint
+    - yarn test:run
   # Қай тармақтарда (branches) ғана іске қосылу керектігін шектейміз
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop"'
