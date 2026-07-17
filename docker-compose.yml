@@ -1,0 +1,28 @@
+services:
+  # Әзірлеу (Development) контейнері
+  web-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: kaspi-front-dev
+    ports:
+      - "4000:3000"
+    volumes:
+      # Локалды компьютердегі файлдарды контейнер ішімен байланыстырамыз (Bind Mount)
+      - .:/app
+      # Контейнер ішіндегі node_modules пен .nuxt папкаларын локалды компьютердегінікін алмасып кетпеуі үшін оқшаулаймыз
+      - /app/node_modules
+      - /app/.nuxt
+    environment:
+      - NODE_ENV=development
+
+  # Продакшн (Production) контейнері
+  web-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kaspi-front-prod
+    ports:
+      - "8080:3000"
+    environment:
+      - NODE_ENV=production
