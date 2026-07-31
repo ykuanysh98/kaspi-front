@@ -1,21 +1,38 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserStore } from '~/entities/user'
+import { useApi } from '~/shared/api'
+import axios from 'axios'
+
+interface ChatUser {
+  id: string | number
+  name?: string
+  company_name?: string
+  email?: string
+  isAi?: boolean
+}
+
+interface ChatMessage {
+  id: number
+  sender: string
+  receiver: string
+  text: string
+  timestamp: string
+}
 
 const userStore = useUserStore()
-const router = useRouter()
+const { post } = useApi()
 
-const users = computed(() => userStore.usersList)
+const users = computed<ChatUser[]>(() => userStore.usersList || [])
 const currentUser = computed(
-  () => userStore.user?.name || userStore.user?.email || 'Қазіргі қолданушы'
+  () => String(userStore.user?.name || userStore.user?.email || 'Қазіргі қолданушы')
 )
-const currentUserEmail = computed(() => userStore.user?.email || 'user')
+const currentUserEmail = computed(() => String(userStore.user?.email || 'user'))
 
-const currentChat = ref<any>(null)
+const currentChat = ref<ChatUser | null>(null)
 const searchQuery = ref('')
 const messageText = ref('')
-const allMessages = ref<any[]>([])
+const allMessages = ref<ChatMessage[]>([])
 
 const filteredUsers = computed(() => {
   const query = searchQuery.value.toLowerCase().trim()
@@ -76,14 +93,88 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('storage', handleStorage)
+  if (mediaRecorder.value && mediaRecorder.value.state !== 'inactive') {
+    mediaRecorder.value.stop()
+  }
+  if (stream) {
+    stream.getTracks().forEach((track) => track.stop())
+  }
 })
 
-const selectUser = (user: any) => {
+const isRecording = ref(false)
+const mediaRecorder = ref<MediaRecorder | null>(null)
+const audioChunks = ref<Blob[]>([])
+let stream: MediaStream | null = null
+
+const startRecording = async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    mediaRecorder.value = new MediaRecorder(stream)
+    audioChunks.value = []
+
+    mediaRecorder.value.ondataavailable = (event: BlobEvent) => {
+      if (event.data.size > 0) {
+        audioChunks.value.push(event.data)
+      }
+    }
+
+    mediaRecorder.value.onstop = async () => {
+      const audioBlob = new Blob(audioChunks.value, { type: 'audio/webm' })
+      const formData = new FormData()
+      formData.append('audio', audioBlob, 'recording.webm')
+
+      try {
+        const apiBase = useRuntimeConfig().public.API_BASE || 'http://127.0.0.1:8000/api'
+        const response = await axios.post(`${apiBase}/transcribe`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        if (response.data && response.data.text) {
+          messageText.value = (messageText.value + ' ' + response.data.text).trim()
+        }
+      } catch (error) {
+        console.error('Дауысты мәтінге айналдыру қатесі:', error)
+      }
+
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop())
+      }
+    }
+
+    mediaRecorder.value.start()
+    isRecording.value = true
+  } catch (error) {
+    console.error('Микрофонға рұқсат алу мүмкін болмады немесе жазу қатесі:', error)
+  }
+}
+
+const stopRecording = () => {
+  if (mediaRecorder.value && mediaRecorder.value.state !== 'inactive') {
+    mediaRecorder.value.stop()
+    isRecording.value = false
+  }
+}
+
+const showAiChat = computed(() => {
+  const query = searchQuery.value.toLowerCase().trim()
+  return !query || "ai көмекші".includes(query) || "assistant".includes(query)
+})
+
+const selectAiChat = () => {
+  currentChat.value = {
+    id: 'ai',
+    name: 'AI Көмекші',
+    email: 'ai@system',
+    isAi: true
+  }
+  scrollToBottom()
+}
+
+const selectUser = (user: ChatUser) => {
   currentChat.value = user
   scrollToBottom()
 }
 
-const sendMessage = () => {
+const sendMessage = async () => {
   if (!messageText.value.trim() || !currentChat.value) return
 
   const receiverEmail = currentChat.value.email || currentChat.value.name
@@ -97,8 +188,40 @@ const sendMessage = () => {
 
   allMessages.value.push(newMessage)
   localStorage.setItem('chat_messages', JSON.stringify(allMessages.value))
+  
+  const originalText = messageText.value.trim()
   messageText.value = ''
   scrollToBottom()
+
+  if (currentChat.value.isAi) {
+    try {
+      const response = await post<{ reply?: string; text?: string; message?: string }>('/chat', {
+        message: originalText
+      })
+      const aiMessage = {
+        id: Date.now() + 1,
+        sender: 'ai@system',
+        receiver: currentUserEmail.value,
+        text: response?.reply || response?.text || response?.message || 'Жауап белгісіз қателікке байланысты алынбады.',
+        timestamp: new Date().toISOString()
+      }
+      allMessages.value.push(aiMessage)
+      localStorage.setItem('chat_messages', JSON.stringify(allMessages.value))
+      scrollToBottom()
+    } catch (error) {
+      console.error('AI чат қатесі:', error)
+      const errMessage = {
+        id: Date.now() + 1,
+        sender: 'ai@system',
+        receiver: currentUserEmail.value,
+        text: 'Сервер тарапынан жауап келмеді немесе қателік орын алды.',
+        timestamp: new Date().toISOString()
+      }
+      allMessages.value.push(errMessage)
+      localStorage.setItem('chat_messages', JSON.stringify(allMessages.value))
+      scrollToBottom()
+    }
+  }
 }
 </script>
 
@@ -155,31 +278,59 @@ const sendMessage = () => {
         <!-- Users List -->
         <div class="flex-1 overflow-y-auto px-2 pb-4">
           <div
-            v-if="filteredUsers.length === 0"
+            v-if="!showAiChat && filteredUsers.length === 0"
             class="text-center text-gray-400 py-8 text-sm">
             Пайдаланушылар табылмады
           </div>
           <ul
             v-else
             class="space-y-1">
+            <!-- AI Chat Item -->
+            <li
+              v-if="showAiChat"
+              @click="selectAiChat()"
+              :class="[
+                'p-3 rounded-xl cursor-pointer flex items-center gap-3 transition duration-200 border border-gray-150',
+                currentChat?.isAi
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'hover:bg-gray-100 text-gray-700 bg-blue-50/50',
+              ]">
+              <div
+                :class="[
+                  'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm bg-blue-100',
+                  currentChat?.isAi ? 'bg-white text-blue-600' : 'bg-blue-600 text-white animate-pulse',
+                ]">
+                🤖
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-sm truncate">AI Көмекші</p>
+                <p
+                  :class="[
+                    'text-xs truncate',
+                    currentChat?.isAi ? 'text-blue-100' : 'text-gray-400',
+                  ]">
+                  Жүйелік көмекші
+                </p>
+              </div>
+            </li>
             <li
               v-for="user in filteredUsers"
               :key="user.id"
               @click="selectUser(user)"
               :class="[
                 'p-3 rounded-xl cursor-pointer flex items-center gap-3 transition duration-200',
-                currentChat?.id === user.id
+                !currentChat?.isAi && currentChat?.id === user.id
                   ? 'bg-blue-600 text-white shadow-md'
                   : 'hover:bg-gray-100 text-gray-700 bg-white border border-gray-100',
               ]">
               <div
                 :class="[
                   'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm',
-                  currentChat?.id === user.id
+                  !currentChat?.isAi && currentChat?.id === user.id
                     ? 'bg-white text-blue-600'
                     : 'bg-blue-100 text-blue-600',
                 ]">
-                {{ (user.name || user.email || "?").slice(0, 1).toUpperCase() }}
+                {{ String(user.name || user.email || "?").slice(0, 1).toUpperCase() }}
               </div>
               <div class="flex-1 min-w-0">
                 <p class="font-semibold text-sm truncate">
@@ -188,7 +339,7 @@ const sendMessage = () => {
                 <p
                   :class="[
                     'text-xs truncate',
-                    currentChat?.id === user.id
+                    !currentChat?.isAi && currentChat?.id === user.id
                       ? 'text-blue-100'
                       : 'text-gray-400',
                   ]">
@@ -208,16 +359,30 @@ const sendMessage = () => {
           v-if="currentChat">
           <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
             {{
-              (currentChat.name || currentChat.email || "?")
-                .slice(0, 1)
-                .toUpperCase()
+              currentChat.isAi
+                ? '🤖'
+                : String(currentChat.name || currentChat.email || '?')
+                    .slice(0, 1)
+                    .toUpperCase()
             }}
           </div>
           <div>
             <h4 class="font-bold text-gray-800">
               {{ currentChat.name || currentChat.email }}
             </h4>
-            <p class="text-xs text-green-500 font-medium flex items-center gap-1">
+            <p
+              v-if="currentChat.isAi"
+              class="text-xs text-blue-500 font-medium flex items-center gap-1"
+            >
+              <span
+                class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block animate-pulse"
+              ></span>
+              AI көмекшісі
+            </p>
+            <p
+              v-else
+              class="text-xs text-green-500 font-medium flex items-center gap-1"
+            >
               <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse"></span>
               желіде
             </p>
@@ -259,7 +424,7 @@ const sendMessage = () => {
               <p class="font-semibold text-xs mb-1 opacity-75">
                 {{
                   msg.sender === currentUserEmail
-                    ? "Сіз"
+                    ? 'Сіз'
                     : currentChat.name || currentChat.email
                 }}
               </p>
@@ -283,6 +448,19 @@ const sendMessage = () => {
           <form
             @submit.prevent="sendMessage"
             class="flex gap-2 items-center">
+            <button 
+              type="button"
+              @click="isRecording ? stopRecording() : startRecording()"
+              :class="[
+                'p-3 rounded-xl transition duration-200 flex items-center justify-center border',
+                isRecording
+                  ? 'bg-red-50 text-red-650 border-red-200 animate-pulse hover:bg-red-100'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-600 border-gray-200'
+              ]"
+              title="Дауыспен енгізу"
+            >
+              <span class="text-lg">{{ isRecording ? '🛑' : '🎙' }}</span>
+            </button>
             <input
               v-model="messageText"
               type="text"
