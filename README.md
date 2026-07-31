@@ -1,75 +1,20 @@
-# Nuxt Minimal Starter
+# Kaspi Client Front-end (SSR)
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Клиенттік тарапқа арналған, өнімдерді іздеуге, таңдауға және тапсырыс беруге арналған жылдам, интерфейсі бай веб-қосымша (Server-Side Rendering).
 
-## Setup
+## 🛠️ Технологиялық стек және қолданылған терминдер (Tech Lead-ке шолу)
 
-Make sure to install dependencies:
+Жобада келесі дағдылар мен технологиялар қолданылған және терең меңгерілген:
 
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- **Фреймворк:** Nuxt 4 (Vue 3, Composition API, File-based routing)
+- **Стейт менеджмент:** Pinia (`@pinia/nuxt`)
+- **Архитектура:** **Feature-Sliced Design (FSD)** (Код базасы `shared`, `features`, `entities` сияқты оқшауланған модульдерге бөлінген, Clean Code және Code Review ережелері сақталған)
+- **Оңтайландыру және SEO:** SSR (Server-Side Rendering), SPA, SSG гибридті рендерингтері қолданылды. Веб-беттердің жылдамдығын оңтайландыру (Core Web Vitals) және SEO Meta назарға алынды.
+- **Тестілеу (Testing):** `vitest`, `@vue/test-utils`, `@nuxt/test-utils` және `happy-dom` арқылы unit және компонент тестілеу жазылды.
+- **Локализация (i18n):** Түрлі тілдерді қолдау жүйесі енгізілген (`vue-i18n`).
+- **Кэштеу (Caching/PWA):** Progressive Web App (PWA) қолдаулары және офлайн кэштеу.
+- **Стильдеу және дизайн жүйесі:** Tailwind CSS, `tailwindcss` модульдері. Сыртқы `ku-ui-kit` дизайн жүйесі интеграцияланды.
+- **Нақты уақыттағы байланыс:** Websocket сұраныстары (Чат функционалында).
+- **AI интеграциясы:** OpenAI SaaS АРІ-лермен жұмыс істеу (Дауысты транскрипциялау және ақылды көмекшімен чат логикасы).
+- **Бағдарламалау тілі:** TypeScript (Қатаң типтеу)
+- **Қауіпсіздік (Security):** JWT токендерін сақтау, ХSS-тен қорғану, Navigation Guards.
