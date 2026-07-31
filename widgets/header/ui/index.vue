@@ -5,13 +5,11 @@ import { useCart } from '@/entities/cart'
 
 const userStore = useUserStore()
 const partnerStore = usePartnerStore()
-
 </script>
 
 <template>
   <header class="bg-white shadow-md border-b">
     <nav class="container mx-auto px-6 py-4 flex flex-wrap justify-between items-center">
-
       <!-- Logo -->
       <NuxtLink
         to="/"
@@ -21,7 +19,6 @@ const partnerStore = usePartnerStore()
 
       <!-- Nav Links -->
       <div class="flex flex-wrap items-center gap-4 md:gap-6 mt-3 md:mt-0">
-
         <NuxtLink
           to="/test"
           class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-red-600 transition">
@@ -66,12 +63,18 @@ const partnerStore = usePartnerStore()
         </NuxtLink>
 
         <NuxtLink
+          v-if="userStore.token"
+          to="/chat"
+          class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition">
+          Чат
+        </NuxtLink>
+
+        <NuxtLink
           v-if="partnerStore.token || userStore.token"
           to="/profile"
           class="px-3 py-2 rounded-md text-gray-700 hover:text-white hover:bg-blue-600 transition">
           Профиль
         </NuxtLink>
-
       </div>
     </nav>
   </header>
